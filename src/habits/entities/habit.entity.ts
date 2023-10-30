@@ -6,6 +6,7 @@ export type HabitProps = {
   response: string;
   reward: string;
   trackedFrom: Date;
+  userId: string;
 };
 
 export class Habit {

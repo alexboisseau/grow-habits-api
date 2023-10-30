@@ -27,6 +27,7 @@ describe('Feature : start to track a habit', () => {
       craving: 'Clean my teeth',
       response: 'Brush my teeth during three minutes',
       reward: 'Have a good feeling with fresh breath',
+      userId: 'bob',
     };
 
     it('should create a new habit and return an id', async () => {

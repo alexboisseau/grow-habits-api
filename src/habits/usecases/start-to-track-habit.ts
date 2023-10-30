@@ -4,6 +4,7 @@ import { IHabitRepository } from '../ports/habit-repository.interface';
 import { IIdGenerator } from '../ports/id-generator.interface';
 
 type Request = {
+  userId: string;
   name: string;
   cue: string;
   craving: string;
