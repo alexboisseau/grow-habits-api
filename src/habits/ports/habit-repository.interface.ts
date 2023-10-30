@@ -6,6 +6,7 @@ export interface IHabitRepository {
     craving: string;
     response: string;
     reward: string;
+    trackedFrom: Date;
   }): Promise<void>;
 
   findById(habitId: string): Promise<{
@@ -15,5 +16,6 @@ export interface IHabitRepository {
     craving: string;
     response: string;
     reward: string;
+    trackedFrom: Date;
   } | null>;
 }

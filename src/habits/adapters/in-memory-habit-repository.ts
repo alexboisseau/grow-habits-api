@@ -8,6 +8,7 @@ export class InMemoryHabitRepository implements IHabitRepository {
     craving: string;
     response: string;
     reward: string;
+    trackedFrom: Date;
   }> = [];
 
   async create(payload: {
@@ -17,6 +18,7 @@ export class InMemoryHabitRepository implements IHabitRepository {
     craving: string;
     response: string;
     reward: string;
+    trackedFrom: Date;
   }): Promise<void> {
     this.database.push(payload);
   }
@@ -28,6 +30,7 @@ export class InMemoryHabitRepository implements IHabitRepository {
     craving: string;
     response: string;
     reward: string;
+    trackedFrom: Date;
   } | null> {
     return this.database.find((habit) => habit.id === habitId) ?? null;
   }

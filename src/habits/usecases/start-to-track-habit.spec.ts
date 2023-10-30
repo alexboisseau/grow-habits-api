@@ -1,3 +1,4 @@
+import { FixedDateGenerator } from '../adapters/fixed-date-generator';
 import { FixedIdGenerator } from '../adapters/fixed-id-generator';
 import { InMemoryHabitRepository } from '../adapters/in-memory-habit-repository';
 import { StartToTrackHabit } from './start-to-track-habit';
@@ -5,12 +6,18 @@ import { StartToTrackHabit } from './start-to-track-habit';
 describe('Feature : start to track a habit', () => {
   let habitRepository: InMemoryHabitRepository;
   let idGenerator: FixedIdGenerator;
+  let dateGenerator: FixedDateGenerator;
   let useCase: StartToTrackHabit;
 
   beforeEach(() => {
     habitRepository = new InMemoryHabitRepository();
     idGenerator = new FixedIdGenerator();
-    useCase = new StartToTrackHabit(habitRepository, idGenerator);
+    dateGenerator = new FixedDateGenerator();
+    useCase = new StartToTrackHabit(
+      habitRepository,
+      idGenerator,
+      dateGenerator,
+    );
   });
 
   describe('Scenario : happy path', () => {
@@ -36,6 +43,14 @@ describe('Feature : start to track a habit', () => {
       const savedHabit = await habitRepository.findById(response.id);
 
       expect(savedHabit).not.toBeNull();
+    });
+
+    it('should add a date field to know from when the user start to track the habit', async () => {
+      const response = await useCase.execute(payload);
+
+      const savedHabit = await habitRepository.findById(response.id);
+
+      expect(savedHabit.trackedFrom).toEqual(dateGenerator.now());
     });
   });
 });
