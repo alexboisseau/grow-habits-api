@@ -1,21 +1,6 @@
-export interface IHabitRepository {
-  create(payload: {
-    id: string;
-    name: string;
-    cue: string;
-    craving: string;
-    response: string;
-    reward: string;
-    trackedFrom: Date;
-  }): Promise<void>;
+import { Habit } from '../entities/habit.entity';
 
-  findById(habitId: string): Promise<{
-    id: string;
-    name: string;
-    cue: string;
-    craving: string;
-    response: string;
-    reward: string;
-    trackedFrom: Date;
-  } | null>;
+export interface IHabitRepository {
+  create(habit: Habit): Promise<void>;
+  findById(habitId: string): Promise<Habit | null>;
 }

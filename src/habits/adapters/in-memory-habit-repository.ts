@@ -1,37 +1,14 @@
+import { Habit } from '../entities/habit.entity';
 import { IHabitRepository } from '../ports/habit-repository.interface';
 
 export class InMemoryHabitRepository implements IHabitRepository {
-  private database: Array<{
-    id: string;
-    name: string;
-    cue: string;
-    craving: string;
-    response: string;
-    reward: string;
-    trackedFrom: Date;
-  }> = [];
+  private database: Array<Habit> = [];
 
-  async create(payload: {
-    id: string;
-    name: string;
-    cue: string;
-    craving: string;
-    response: string;
-    reward: string;
-    trackedFrom: Date;
-  }): Promise<void> {
-    this.database.push(payload);
+  async create(habit: Habit): Promise<void> {
+    this.database.push(habit);
   }
 
-  async findById(habitId: string): Promise<{
-    id: string;
-    name: string;
-    cue: string;
-    craving: string;
-    response: string;
-    reward: string;
-    trackedFrom: Date;
-  } | null> {
-    return this.database.find((habit) => habit.id === habitId) ?? null;
+  async findById(habitId: string): Promise<Habit | null> {
+    return this.database.find((habit) => habit.props.id === habitId) ?? null;
   }
 }

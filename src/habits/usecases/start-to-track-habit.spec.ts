@@ -50,7 +50,7 @@ describe('Feature : start to track a habit', () => {
 
       const savedHabit = await habitRepository.findById(response.id);
 
-      expect(savedHabit.trackedFrom).toEqual(dateGenerator.now());
+      expect(savedHabit.props.trackedFrom).toEqual(dateGenerator.now());
     });
   });
 });
