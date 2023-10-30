@@ -16,7 +16,7 @@ type Response = {
   id: string;
 };
 
-export class StartToTrackHabit {
+export class CreateAHabitToTrack {
   constructor(
     private readonly habitRepository: IHabitRepository,
     private readonly idGenerator: IIdGenerator,

@@ -1,19 +1,19 @@
 import { FixedDateGenerator } from '../adapters/fixed-date-generator';
 import { FixedIdGenerator } from '../adapters/fixed-id-generator';
 import { InMemoryHabitRepository } from '../adapters/in-memory-habit-repository';
-import { StartToTrackHabit } from './start-to-track-habit';
+import { CreateAHabitToTrack } from './create-a-habit-to-track';
 
-describe('Feature : start to track a habit', () => {
+describe('Feature : create a habit to track', () => {
   let habitRepository: InMemoryHabitRepository;
   let idGenerator: FixedIdGenerator;
   let dateGenerator: FixedDateGenerator;
-  let useCase: StartToTrackHabit;
+  let useCase: CreateAHabitToTrack;
 
   beforeEach(() => {
     habitRepository = new InMemoryHabitRepository();
     idGenerator = new FixedIdGenerator();
     dateGenerator = new FixedDateGenerator();
-    useCase = new StartToTrackHabit(
+    useCase = new CreateAHabitToTrack(
       habitRepository,
       idGenerator,
       dateGenerator,
