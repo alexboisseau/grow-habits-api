@@ -55,7 +55,7 @@ describe('Feature : create a habit to track', () => {
 
       const savedHabit = await habitRepository.findById(response.id);
 
-      expectHabitToEqual(savedHabit);
+      expectHabitToEqual(savedHabit!);
     });
 
     it('should add a date field to know from when the user start to track the habit', async () => {
@@ -63,7 +63,7 @@ describe('Feature : create a habit to track', () => {
 
       const savedHabit = await habitRepository.findById(response.id);
 
-      expect(savedHabit.props.trackedFrom).toEqual(dateGenerator.now());
+      expect(savedHabit!.props.trackedFrom).toEqual(dateGenerator.now());
     });
   });
 });
