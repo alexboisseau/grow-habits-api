@@ -10,30 +10,28 @@ describe('Feature : complete a habit', () => {
     useCase = new CompleteHabit(trackedHabitRepository);
   });
 
-  describe('Scenario: happy path', () => {
-    describe('Scenario: tracked habit does not already exist', () => {
-      const payload = {
-        habitId: 'habit-2',
-        dateString: '2023-09-22',
-      };
+  describe('Scenario: tracked habit does not already exist', () => {
+    const payload = {
+      habitId: 'habit-2',
+      dateString: '2023-09-22',
+    };
 
-      it('should create and complete the habit', async () => {
-        await useCase.execute({ ...payload });
+    it('should create and complete the habit', async () => {
+      await useCase.execute({ ...payload });
 
-        const createdTrackHabit =
-          (await trackedHabitRepository.findByHabitIdAndDate(
-            payload.habitId,
-            payload.dateString,
-          ))!;
+      const createdTrackHabit =
+        (await trackedHabitRepository.findByHabitIdAndDate(
+          payload.habitId,
+          payload.dateString,
+        ))!;
 
-        expect(createdTrackHabit).not.toBeNull();
-        expect(createdTrackHabit.props).toEqual({
-          date: '2023-09-22',
-          habitId: payload.habitId,
-          id: 'tracked-habit-1',
-          status: 'COMPLETED',
-          userId: 'bob',
-        });
+      expect(createdTrackHabit).not.toBeNull();
+      expect(createdTrackHabit.props).toEqual({
+        date: '2023-09-22',
+        habitId: payload.habitId,
+        id: 'tracked-habit-1',
+        status: 'COMPLETED',
+        userId: 'bob',
       });
     });
   });
