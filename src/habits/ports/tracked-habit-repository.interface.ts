@@ -7,4 +7,5 @@ export interface ITrackedHabitRepository {
   ): Promise<TrackedHabit | null>;
 
   create(trackedHabit: TrackedHabit): Promise<void>;
+  update(trackedHabit: TrackedHabit): Promise<void>;
 }

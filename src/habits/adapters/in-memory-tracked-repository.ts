@@ -9,17 +9,34 @@ export class InMemoryTrackedHabitRepository implements ITrackedHabitRepository {
   }
 
   async findByHabitIdAndDate(
-    trackedHabitId: string,
+    habitId: string,
     date: string,
   ): Promise<TrackedHabit | null> {
     const trackedHabitIndex = this.database.findIndex(
       (trackedHabit) =>
-        trackedHabit.props.habitId === trackedHabitId &&
+        trackedHabit.props.habitId === habitId &&
         trackedHabit.props.date === date,
     );
 
     if (trackedHabitIndex < 0) return null;
 
     return new TrackedHabit({ ...this.database[trackedHabitIndex].props });
+  }
+
+  async update(trackedHabit: TrackedHabit) {
+    const trackedHabitIndex = this.database.findIndex(
+      (_trackedHabit) =>
+        _trackedHabit.props.habitId === trackedHabit.props.habitId &&
+        _trackedHabit.props.date === trackedHabit.props.date,
+    );
+
+    if (trackedHabitIndex < 0) return;
+
+    this.database[trackedHabitIndex] = trackedHabit;
+    trackedHabit.commit();
+  }
+
+  count(): number {
+    return this.database.length;
   }
 }

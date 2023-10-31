@@ -1,6 +1,6 @@
-type TrackedHabitStatus = 'TO_COMPLETE' | 'COMPLETED';
+export type TrackedHabitStatus = 'TO_COMPLETE' | 'COMPLETED';
 
-type TrackedHabitProps = {
+export type TrackedHabitProps = {
   id: string;
   status: TrackedHabitStatus;
   date: string;
@@ -9,5 +9,20 @@ type TrackedHabitProps = {
 };
 
 export class TrackedHabit {
-  constructor(public props: TrackedHabitProps) {}
+  public initialProps: TrackedHabitProps;
+
+  constructor(public props: TrackedHabitProps) {
+    this.initialProps = { ...this.props };
+  }
+
+  update(data: Partial<TrackedHabitProps>) {
+    this.props = {
+      ...this.props,
+      ...data,
+    };
+  }
+
+  commit() {
+    this.initialProps = { ...this.props };
+  }
 }
