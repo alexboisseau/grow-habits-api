@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { I_DATE_GENERATOR } from './ports/date-generator.interface';
-import { FixedIdGenerator } from './adapters/fixed-id-generator';
 import { I_ID_GENERATOR } from './ports/id-generator.interface';
 import { CurrentDateGenerator } from './adapters/current-date-generator';
+import { RandomIdGenerator } from './adapters/random-id-generator';
 
 @Module({
   providers: [
@@ -15,7 +15,7 @@ import { CurrentDateGenerator } from './adapters/current-date-generator';
     {
       provide: I_ID_GENERATOR,
       useFactory: () => {
-        return new FixedIdGenerator();
+        return new RandomIdGenerator();
       },
     },
   ],
