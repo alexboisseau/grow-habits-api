@@ -1,7 +1,7 @@
 import { Habit } from '../entities/habit.entity';
-import { IDateGenerator } from '../ports/date-generator.interface';
 import { IHabitRepository } from '../ports/habit-repository.interface';
-import { IIdGenerator } from '../ports/id-generator.interface';
+import { IDateGenerator } from '../../common/ports/date-generator.interface';
+import { IIdGenerator } from '../../common/ports/id-generator.interface';
 
 type Request = {
   userId: string;
