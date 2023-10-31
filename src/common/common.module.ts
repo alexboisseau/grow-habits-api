@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
 import { I_DATE_GENERATOR } from './ports/date-generator.interface';
-import { FixedDateGenerator } from './adapters/fixed-date-generator';
 import { FixedIdGenerator } from './adapters/fixed-id-generator';
 import { I_ID_GENERATOR } from './ports/id-generator.interface';
+import { CurrentDateGenerator } from './adapters/current-date-generator';
 
 @Module({
   providers: [
     {
       provide: I_DATE_GENERATOR,
       useFactory: () => {
-        return new FixedDateGenerator();
+        return new CurrentDateGenerator();
       },
     },
     {
