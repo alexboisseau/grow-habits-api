@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { CreateAHabitToTrack } from './usecases/create-a-habit-to-track';
 import { HabitAPI } from './contract';
-import { ZodValidationPipe } from './pipes/zod-validation.pipe';
+import { ZodValidationPipe } from '../core/pipes/zod-validation.pipe';
 
 @Controller()
 export class HabitController {
