@@ -15,4 +15,13 @@ export namespace HabitAPI {
       id: string;
     };
   }
+
+  export namespace CompleteHabit {
+    export const schema = z.object({
+      date: z.string().refine((value) => !isNaN(Date.parse(value))),
+    });
+
+    export type Request = z.infer<typeof schema>;
+    export type Response = void;
+  }
 }

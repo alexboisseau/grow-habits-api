@@ -1,5 +1,6 @@
 import { TrackedHabit } from '../entities/tracked-habit.entity';
 
+export const I_TRACKED_HABIT_REPOSITORY = 'ITRACKED_HABIT_REPOSITORY';
 export interface ITrackedHabitRepository {
   findByHabitIdAndDate(
     trackedHabitId: string,
