@@ -2,7 +2,7 @@ import { Habit } from '../entities/habit.entity';
 import { IHabitRepository } from '../ports/habit-repository.interface';
 
 export class InMemoryHabitRepository implements IHabitRepository {
-  private database: Array<Habit> = [];
+  constructor(private database: Array<Habit> = []) {}
 
   async create(habit: Habit): Promise<void> {
     this.database.push(habit);

@@ -19,6 +19,10 @@ export class TrackedHabit {
     return new Date(this.props.date) > currentDate;
   }
 
+  isBeforeStartDate(startDate: Date) {
+    return new Date(this.props.date) < startDate;
+  }
+
   update(data: Partial<TrackedHabitProps>) {
     this.props = {
       ...this.props,
