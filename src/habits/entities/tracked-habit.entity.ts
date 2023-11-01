@@ -15,6 +15,10 @@ export class TrackedHabit {
     this.initialProps = { ...this.props };
   }
 
+  isInTheFuture(currentDate: Date) {
+    return new Date(this.props.date) > currentDate;
+  }
+
   update(data: Partial<TrackedHabitProps>) {
     this.props = {
       ...this.props,
