@@ -54,14 +54,37 @@ describe('Feature : complete a tracked habit', () => {
   });
 
   describe('Happy path', () => {
-    describe('Scenario: tracked habit does not already exist', () => {
-      const payload = {
-        habitId: 'id-1',
-        date: '2023-01-03',
-        user: bob,
-      };
+    describe('Scenario: tracked habit does already exist', () => {
+      it('should complete the tracked habit', async () => {
+        const payload = {
+          habitId: uncompletedTrackedHabit.props.habitId,
+          date: uncompletedTrackedHabit.props.date,
+          user: bob,
+        };
 
+        await useCase.execute({ ...payload });
+
+        const trackedHabit = (await trackedHabitRepository.findByHabitIdAndDate(
+          payload.habitId,
+          payload.date,
+        )) as TrackedHabit;
+
+        expect(trackedHabit.props).toEqual({
+          ...uncompletedTrackedHabit.props,
+          status: 'COMPLETED',
+        });
+        expect(trackedHabitRepository.count()).toEqual(1);
+      });
+    });
+
+    describe('Scenario: tracked habit does not already exist', () => {
       it('should create and complete the tracked habit', async () => {
+        const payload = {
+          habitId: 'id-1',
+          date: '2023-01-03',
+          user: bob,
+        };
+
         await useCase.execute({
           ...payload,
         });
@@ -70,7 +93,7 @@ describe('Feature : complete a tracked habit', () => {
           (await trackedHabitRepository.findByHabitIdAndDate(
             payload.habitId,
             payload.date,
-          ))!;
+          )) as TrackedHabit;
 
         expect(createdTrackHabit).not.toBeNull();
         expect(createdTrackHabit.props).toEqual({
@@ -82,43 +105,17 @@ describe('Feature : complete a tracked habit', () => {
         });
       });
     });
-
-    describe('Scenario: tracked habit does already exist', () => {
-      const payload = {
-        habitId: uncompletedTrackedHabit.props.habitId,
-        date: uncompletedTrackedHabit.props.date,
-        user: bob,
-      };
-
-      it('should create and complete the tracked habit', async () => {
-        await useCase.execute({ ...payload });
-
-        const trackedHabit = (await trackedHabitRepository.findByHabitIdAndDate(
-          payload.habitId,
-          payload.date,
-        ))!;
-
-        expect(trackedHabit.props).toEqual({
-          date: uncompletedTrackedHabit.props.date,
-          habitId: uncompletedTrackedHabit.props.habitId,
-          id: uncompletedTrackedHabit.props.id,
-          status: 'COMPLETED',
-          userId: uncompletedTrackedHabit.props.userId,
-        });
-        expect(trackedHabitRepository.count()).toEqual(1);
-      });
-    });
   });
 
   describe('Unhappy path', () => {
     describe('Scenario: complete tracked habit related to a non-existing habit', () => {
-      const payload = {
-        habitId: 'id-2',
-        date: '2023-01-02',
-        user: bob,
-      };
-
       it('should fail', async () => {
+        const payload = {
+          habitId: 'invalid-id',
+          date: '2023-01-02',
+          user: bob,
+        };
+
         await expect(() => useCase.execute({ ...payload })).rejects.toThrow(
           'Habit not found',
         );
@@ -126,13 +123,13 @@ describe('Feature : complete a tracked habit', () => {
     });
 
     describe('Scenario: complete tracked habit in the future', () => {
-      const payload = {
-        habitId: uncompletedTrackedHabit.props.habitId,
-        date: '2024-01-02',
-        user: bob,
-      };
-
       it('should fail', async () => {
+        const payload = {
+          habitId: uncompletedTrackedHabit.props.habitId,
+          date: '2024-01-02',
+          user: bob,
+        };
+
         await expect(() => useCase.execute({ ...payload })).rejects.toThrow(
           'Tracked habit date cannot be in the future',
         );
@@ -140,13 +137,13 @@ describe('Feature : complete a tracked habit', () => {
     });
 
     describe('Scenario: complete tracked habit before the tracked from date', () => {
-      const payload = {
-        habitId: habit.props.id,
-        date: '2022-12-31',
-        user: bob,
-      };
-
       it('should fail', async () => {
+        const payload = {
+          habitId: uncompletedTrackedHabit.props.habitId,
+          date: '2022-12-31',
+          user: bob,
+        };
+
         await expect(() => useCase.execute({ ...payload })).rejects.toThrow(
           "Completion date must be after the habit's start date.",
         );

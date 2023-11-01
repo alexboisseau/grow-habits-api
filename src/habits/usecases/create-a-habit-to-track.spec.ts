@@ -34,7 +34,7 @@ describe('Feature : create a habit to track', () => {
     );
   });
 
-  describe('Scenario : happy path', () => {
+  describe('Happy path', () => {
     const payload = {
       name: 'Brush my teeth',
       cue: 'After my breakfast',
@@ -53,17 +53,17 @@ describe('Feature : create a habit to track', () => {
     it('should save the habit in the persistence layer', async () => {
       const response = await useCase.execute(payload);
 
-      const savedHabit = await habitRepository.findById(response.id);
+      const savedHabit = (await habitRepository.findById(response.id)) as Habit;
 
-      expectHabitToEqual(savedHabit!);
+      expectHabitToEqual(savedHabit);
     });
 
     it('should add a date field to know from when the user start to track the habit', async () => {
       const response = await useCase.execute(payload);
 
-      const savedHabit = await habitRepository.findById(response.id);
+      const savedHabit = (await habitRepository.findById(response.id)) as Habit;
 
-      expect(savedHabit!.props.trackedFrom).toEqual(dateGenerator.now());
+      expect(savedHabit.props.trackedFrom).toEqual(dateGenerator.now());
     });
   });
 });
