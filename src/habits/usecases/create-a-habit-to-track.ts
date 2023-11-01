@@ -25,7 +25,7 @@ export class CreateAHabitToTrack {
 
   public async execute(request: Request): Promise<Response> {
     const id = this.idGenerator.generate();
-    const trackedFrom = this.dateGenerator.now();
+    const trackedFrom = this.dateGenerator.currentDateAtMidnight();
 
     const habit = new Habit({
       id,
