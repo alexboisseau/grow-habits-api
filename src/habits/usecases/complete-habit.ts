@@ -25,35 +25,38 @@ export class CompleteHabit {
     const existingTrackedHabit =
       await this.trackedHabitRepository.findByHabitIdAndDate(habitId, date);
 
-    if (existingTrackedHabit === null) {
-      const id = this.idGenerator.generate();
-
-      const newTrackedHabit = new TrackedHabit({
-        date,
-        habitId,
-        id,
-        status: 'COMPLETED',
-        userId: user.props.id,
-      });
-
-      if (newTrackedHabit.isInTheFuture(this.dateGenerator.now()))
-        throw new TrackedHabitDateInFutureException();
-
-      const habit = (await this.habitRepository.findById(habitId))!;
-
-      if (newTrackedHabit.isBeforeStartDate(habit.props.trackedFrom)) {
-        throw new Error(
-          "Completion date must be after the habit's start date.",
-        );
-      }
-
-      await this.trackedHabitRepository.create(newTrackedHabit);
-    } else {
+    if (existingTrackedHabit) {
       existingTrackedHabit.update({
         status: 'COMPLETED',
       });
 
       await this.trackedHabitRepository.update(existingTrackedHabit);
+      return;
     }
+
+    const id = this.idGenerator.generate();
+
+    const newTrackedHabit = new TrackedHabit({
+      date,
+      habitId,
+      id,
+      status: 'COMPLETED',
+      userId: user.props.id,
+    });
+
+    const habit = await this.habitRepository.findById(habitId);
+
+    if (habit === null) {
+      throw new Error('Habit not found');
+    }
+
+    if (newTrackedHabit.isInTheFuture(this.dateGenerator.now()))
+      throw new TrackedHabitDateInFutureException();
+
+    if (newTrackedHabit.isBeforeStartDate(habit.props.trackedFrom)) {
+      throw new Error("Completion date must be after the habit's start date.");
+    }
+
+    await this.trackedHabitRepository.create(newTrackedHabit);
   }
 }
