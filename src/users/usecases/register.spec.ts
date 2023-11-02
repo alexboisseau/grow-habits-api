@@ -10,8 +10,14 @@ describe('Feature: Register', () => {
   let idGenerator: IIdGenerator;
   let usecase: Register;
 
+  const bob = new User({
+    id: 'id-2',
+    email: 'bob@gmail.com',
+    password: 'azerty',
+  });
+
   beforeEach(() => {
-    userRepository = new InMemoryUserRepository();
+    userRepository = new InMemoryUserRepository([bob]);
     idGenerator = new FixedIdGenerator();
     usecase = new Register(userRepository, idGenerator);
   });
@@ -76,6 +82,18 @@ describe('Feature: Register', () => {
 
       await expect(() => usecase.execute({ ...payload })).rejects.toThrow(
         'Password length must be greater than or equal to 8',
+      );
+    });
+
+    it('should fail if the email is already associated with a user', async () => {
+      const payload = {
+        email: bob.props.email,
+        password: '12345678',
+        confirmPassword: '12345678',
+      };
+
+      await expect(() => usecase.execute({ ...payload })).rejects.toThrow(
+        'Email already associated with a user',
       );
     });
   });

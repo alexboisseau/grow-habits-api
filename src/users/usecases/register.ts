@@ -27,10 +27,13 @@ export class Register {
       throw new Error('Password length must be greater than or equal to 8');
     }
 
-    const id = this.idGenerator.generate();
+    const user = await this.userRepository.findByEmail(request.email);
+    if (user) {
+      throw new Error('Email already associated with a user');
+    }
 
     const createdUser = new User({
-      id,
+      id: this.idGenerator.generate(),
       email: request.email,
       password: request.password,
     });
@@ -38,7 +41,7 @@ export class Register {
     await this.userRepository.create(createdUser);
 
     return {
-      id,
+      id: createdUser.props.id,
     };
   }
 }
