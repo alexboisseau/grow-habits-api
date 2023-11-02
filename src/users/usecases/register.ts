@@ -4,6 +4,7 @@ import { ConfirmPasswordException } from '../exceptions/confirm-password';
 import { EmailAlreadyUsedException } from '../exceptions/email-already-used';
 import { EmailFormatException } from '../exceptions/email-format';
 import { PasswordLengthException } from '../exceptions/password-length';
+import { IPasswordHasher } from '../ports/password-hasher.interface';
 import { IUserRepository } from '../ports/user-repository.interface';
 
 type Request = {
@@ -20,6 +21,7 @@ export class Register {
   constructor(
     private readonly userRepository: IUserRepository,
     private readonly idGenerator: IIdGenerator,
+    private readonly passwordHasher: IPasswordHasher,
   ) {}
 
   async execute(request: Request): Promise<Response> {
@@ -28,10 +30,12 @@ export class Register {
     this.validateConfirmPassword(request.password, request.confirmPassword);
     await this.validateEmailIsFree(request.email);
 
+    const hashedPassword = await this.passwordHasher.hash(request.password);
+
     const createdUser = new User({
       id: this.idGenerator.generate(),
       email: request.email,
-      password: request.password,
+      password: hashedPassword,
     });
 
     await this.userRepository.create(createdUser);

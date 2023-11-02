@@ -1,5 +1,6 @@
 import { FixedIdGenerator } from '../../common/adapters/fixed-id-generator';
 import { IIdGenerator } from '../../common/ports/id-generator.interface';
+import { FakePasswordHasher } from '../adapters/fake-password-hasher';
 import { InMemoryUserRepository } from '../adapters/in-memory-user-repository';
 import { User } from '../entities/user.entity';
 import { IUserRepository } from '../ports/user-repository.interface';
@@ -8,6 +9,7 @@ import { Register } from './register';
 describe('Feature: Register', () => {
   let userRepository: IUserRepository;
   let idGenerator: IIdGenerator;
+  let passwordHasher: FakePasswordHasher;
   let usecase: Register;
 
   const bob = new User({
@@ -19,7 +21,8 @@ describe('Feature: Register', () => {
   beforeEach(() => {
     userRepository = new InMemoryUserRepository([bob]);
     idGenerator = new FixedIdGenerator();
-    usecase = new Register(userRepository, idGenerator);
+    passwordHasher = new FakePasswordHasher();
+    usecase = new Register(userRepository, idGenerator, passwordHasher);
   });
 
   describe('Happy path', () => {
@@ -39,6 +42,19 @@ describe('Feature: Register', () => {
       });
     });
 
+    it('should hash the password before saving it', async () => {
+      const payload = {
+        email: 'alice@gmail.com',
+        password: '12345678',
+        confirmPassword: '12345678',
+      };
+
+      await usecase.execute({ ...payload });
+
+      const hashCalls = passwordHasher.getHashCalls();
+      expect(hashCalls).toContain('12345678');
+    });
+
     it('should persists the created user', async () => {
       const payload = {
         email: 'alice@gmail.com',
@@ -55,7 +71,7 @@ describe('Feature: Register', () => {
       expect(createdUser.props).toEqual({
         id,
         email: 'alice@gmail.com',
-        password: '12345678',
+        password: 'hashed-12345678',
       });
     });
   });
