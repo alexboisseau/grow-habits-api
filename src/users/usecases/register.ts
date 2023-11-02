@@ -19,6 +19,10 @@ export class Register {
   ) {}
 
   async execute(request: Request): Promise<Response> {
+    if (this.isValidEmail(request.email) === false) {
+      throw new Error('Invalid email format');
+    }
+
     if (request.password !== request.confirmPassword) {
       throw new Error("Password and confirm password fields don't match");
     }
@@ -43,5 +47,10 @@ export class Register {
     return {
       id: createdUser.props.id,
     };
+  }
+
+  private isValidEmail(email: string): boolean {
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+    return emailRegex.test(email);
   }
 }

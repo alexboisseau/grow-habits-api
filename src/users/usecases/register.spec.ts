@@ -96,5 +96,17 @@ describe('Feature: Register', () => {
         'Email already associated with a user',
       );
     });
+
+    it('should fail if the email is not valid', async () => {
+      const payload = {
+        email: "I'm not an email",
+        password: '12345678',
+        confirmPassword: '12345678',
+      };
+
+      await expect(() => usecase.execute({ ...payload })).rejects.toThrow(
+        'Invalid email format',
+      );
+    });
   });
 });
