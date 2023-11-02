@@ -19,11 +19,20 @@ export class Register {
   ) {}
 
   async execute(request: Request): Promise<Response> {
+    if (request.password !== request.confirmPassword) {
+      throw new Error("Password and confirm password fields don't match");
+    }
+
+    if (request.password.length < 8) {
+      throw new Error('Password length must be greater than or equal to 8');
+    }
+
     const id = this.idGenerator.generate();
 
     const createdUser = new User({
       id,
-      ...request,
+      email: request.email,
+      password: request.password,
     });
 
     await this.userRepository.create(createdUser);

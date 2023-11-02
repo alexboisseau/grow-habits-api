@@ -20,8 +20,8 @@ describe('Feature: Register', () => {
     it('should return an id', async () => {
       const payload = {
         email: 'alice@gmail.com',
-        password: '123456',
-        confirmPassword: '123456',
+        password: '12345678',
+        confirmPassword: '12345678',
       };
 
       const response = await usecase.execute({
@@ -36,8 +36,8 @@ describe('Feature: Register', () => {
     it('should persists the created user', async () => {
       const payload = {
         email: 'alice@gmail.com',
-        password: '123456',
-        confirmPassword: '123456',
+        password: '12345678',
+        confirmPassword: '12345678',
       };
 
       const { id } = await usecase.execute({
@@ -49,9 +49,34 @@ describe('Feature: Register', () => {
       expect(createdUser.props).toEqual({
         id,
         email: 'alice@gmail.com',
+        password: '12345678',
+      });
+    });
+  });
+
+  describe('Unhappy path', () => {
+    it('should fail if password and confirm password fields are not equals', async () => {
+      const payload = {
+        email: 'alice@gmail.com',
+        password: '12345678',
+        confirmPassword: '87654321',
+      };
+
+      await expect(() => usecase.execute({ ...payload })).rejects.toThrow(
+        "Password and confirm password fields don't match",
+      );
+    });
+
+    it('should fail if password length is less than 8', async () => {
+      const payload = {
+        email: 'alice@gmail.com',
         password: '123456',
         confirmPassword: '123456',
-      });
+      };
+
+      await expect(() => usecase.execute({ ...payload })).rejects.toThrow(
+        'Password length must be greater than or equal to 8',
+      );
     });
   });
 });
