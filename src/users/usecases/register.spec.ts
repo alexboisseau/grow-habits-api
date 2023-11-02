@@ -85,7 +85,7 @@ describe('Feature: Register', () => {
       );
     });
 
-    it('should fail if the email is already associated with a user', async () => {
+    it('should fail if the email is already used', async () => {
       const payload = {
         email: bob.props.email,
         password: '12345678',
@@ -93,7 +93,7 @@ describe('Feature: Register', () => {
       };
 
       await expect(() => usecase.execute({ ...payload })).rejects.toThrow(
-        'Email already associated with a user',
+        'Email already used',
       );
     });
 

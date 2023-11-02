@@ -1,5 +1,9 @@
 import { IIdGenerator } from '../../common/ports/id-generator.interface';
 import { User } from '../entities/user.entity';
+import { ConfirmPasswordException } from '../exceptions/confirm-password';
+import { EmailAlreadyUsedException } from '../exceptions/email-already-used';
+import { EmailFormatException } from '../exceptions/email-format';
+import { PasswordLengthException } from '../exceptions/password-length';
 import { IUserRepository } from '../ports/user-repository.interface';
 
 type Request = {
@@ -19,22 +23,10 @@ export class Register {
   ) {}
 
   async execute(request: Request): Promise<Response> {
-    if (this.isValidEmail(request.email) === false) {
-      throw new Error('Invalid email format');
-    }
-
-    if (request.password !== request.confirmPassword) {
-      throw new Error("Password and confirm password fields don't match");
-    }
-
-    if (request.password.length < 8) {
-      throw new Error('Password length must be greater than or equal to 8');
-    }
-
-    const user = await this.userRepository.findByEmail(request.email);
-    if (user) {
-      throw new Error('Email already associated with a user');
-    }
+    this.validateEmail(request.email);
+    this.validatePassword(request.password);
+    this.validateConfirmPassword(request.password, request.confirmPassword);
+    await this.validateEmailIsFree(request.email);
 
     const createdUser = new User({
       id: this.idGenerator.generate(),
@@ -47,6 +39,33 @@ export class Register {
     return {
       id: createdUser.props.id,
     };
+  }
+
+  private validatePassword(password: string): void {
+    if (password.length < 8) {
+      throw new PasswordLengthException();
+    }
+  }
+
+  private validateConfirmPassword(
+    password: string,
+    confirmPassword: string,
+  ): void {
+    if (password !== confirmPassword) {
+      throw new ConfirmPasswordException();
+    }
+  }
+
+  private validateEmail(email: string): void {
+    if (!this.isValidEmail(email)) {
+      throw new EmailFormatException();
+    }
+  }
+
+  private async validateEmailIsFree(email: string): Promise<void> {
+    if (await this.userRepository.findByEmail(email)) {
+      throw new EmailAlreadyUsedException();
+    }
   }
 
   private isValidEmail(email: string): boolean {
