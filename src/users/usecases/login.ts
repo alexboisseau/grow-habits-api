@@ -1,4 +1,5 @@
 import { User } from '../entities/user.entity';
+import { UserNotFoundException } from '../exceptions/user-not-found';
 import { WrongCredentialsException } from '../exceptions/wrong-credentials';
 import { IPasswordHasher } from '../ports/password-hasher.interface';
 import { ISessionManager } from '../ports/session-manager.interface';
@@ -21,19 +22,28 @@ export class Login {
   ) {}
 
   async execute(request: Request): Promise<Response> {
-    const user = (await this.userRepository.findByEmail(request.email)) as User;
+    const user = await this.userRepository.findByEmail(request.email);
 
-    const passwordIsValid = await this.passwordHasher.compare(
-      request.password,
-      user.props.password,
-    );
+    this.validateUser(user);
+    await this.validatePassword(user!, request.password);
 
-    if (!passwordIsValid) throw new WrongCredentialsException();
-
-    const sessionId = await this.sessionManager.createSession('id-1');
+    const sessionId = await this.sessionManager.createSession(user!.props.id);
 
     return {
       sessionId,
     };
+  }
+
+  private validateUser(user: User | null) {
+    if (user === null) throw new UserNotFoundException();
+  }
+
+  private async validatePassword(user: User, password: string) {
+    const passwordIsValid = await this.passwordHasher.compare(
+      password,
+      user.props.password,
+    );
+
+    if (!passwordIsValid) throw new WrongCredentialsException();
   }
 }

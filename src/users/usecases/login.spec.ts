@@ -50,4 +50,15 @@ describe('Feature: login', () => {
       );
     });
   });
+
+  describe('Unhappy path : user not found', () => {
+    it('should fail', async () => {
+      const payload = {
+        email: 'unknow@gmail.com',
+        password: 'Welcome@123',
+      };
+
+      await expect(useCase.execute(payload)).rejects.toThrow('User not found');
+    });
+  });
 });
