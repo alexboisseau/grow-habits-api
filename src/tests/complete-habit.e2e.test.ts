@@ -8,7 +8,14 @@ import {
 import { TrackedHabit } from '../habits/entities/tracked-habit.entity';
 import { e2eUser } from './seeds/user-seeds';
 
-describe('Feature: completing a habit', () => {
+describe('Feature: complete habit', () => {
+  async function login(agent: request.SuperAgentTest) {
+    await agent.post('/login').send({
+      email: e2eUser.alice.entity.props.email,
+      password: 'Welcome@123',
+    });
+  }
+
   let app: TestApp;
   let agent: request.SuperAgentTest;
 
@@ -25,10 +32,7 @@ describe('Feature: completing a habit', () => {
 
   describe('Happy path', () => {
     it('should complete the tracked habit', async () => {
-      await agent.post('/login').send({
-        email: e2eUser.alice.entity.props.email,
-        password: 'Welcome@123',
-      });
+      await login(agent);
 
       const result = await agent.post('/habits/id-1/complete').send(payload);
 
@@ -40,7 +44,7 @@ describe('Feature: completing a habit', () => {
 
       const completedHabit = (await trackedHabitRepository.findByHabitIdAndDate(
         'id-1',
-        '2023-01-03',
+        payload.date,
       )) as TrackedHabit;
 
       expect(completedHabit.props.status).toEqual('COMPLETED');
