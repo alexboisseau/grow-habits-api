@@ -1,22 +1,25 @@
-import { INestApplication } from '@nestjs/common';
-import { Test } from '@nestjs/testing';
-import { AppModule } from '../core/app.module';
 import * as request from 'supertest';
+import { TestApp } from './utils/test-app';
+import { e2eUser } from './seeds/user-seeds';
 
 describe('Feature : create a habit to track', () => {
-  let app: INestApplication;
+  let app: TestApp;
 
   beforeEach(async () => {
-    const module = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
-
-    app = module.createNestApplication();
-    await app.init();
+    app = new TestApp();
+    await app.setup();
+    await app.loadFixtures([e2eUser.alice]);
   });
 
   describe('Scenario : happy path', () => {
     it('should create the new habit', async () => {
+      const agent = request.agent(app.getHttpServer());
+
+      await agent.post('/login').send({
+        email: e2eUser.alice.entity.props.email,
+        password: 'Welcome@123',
+      });
+
       const payload = {
         name: 'Brush my teeth',
         cue: 'After my breakfast',
@@ -26,9 +29,7 @@ describe('Feature : create a habit to track', () => {
         userId: 'bob',
       };
 
-      const result = await request(app.getHttpServer())
-        .post('/habits')
-        .send(payload);
+      const result = await agent.post('/habits').send(payload);
 
       expect(result.status).toEqual(201);
     });
