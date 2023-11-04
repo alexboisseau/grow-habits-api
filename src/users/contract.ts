@@ -13,16 +13,4 @@ export namespace UserAPI {
       id: string;
     };
   }
-
-  export namespace Login {
-    export const schema = z.object({
-      email: z.string(),
-      password: z.string(),
-    });
-
-    export type Request = z.infer<typeof schema>;
-    export type Response = {
-      sessionId: string;
-    };
-  }
 }
