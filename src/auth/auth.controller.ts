@@ -1,18 +1,17 @@
-import { Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { LocalGuard } from './local/local.guard';
-import { SessionGuard } from './session/session.guard';
+import { User } from '../users/entities/user.entity';
 
 @Controller()
 export class AuthController {
   @UseGuards(LocalGuard)
   @Post('/login')
-  async handleLogin(@Req() req: any) {
-    return { msg: 'you are logged in' };
-  }
-
-  @UseGuards(SessionGuard)
-  @Get('/protected')
-  async handleProtected(@Req() req: any) {
-    return { msg: 'you are authorized', user: req.user };
+  async handleLogin(@Req() req: Request & { user: User }) {
+    return {
+      user: {
+        id: req.user.props.id,
+        email: req.user.props.email,
+      },
+    };
   }
 }

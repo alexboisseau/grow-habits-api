@@ -11,15 +11,13 @@ export class AuthService {
     private readonly passwordHandler: IPasswordHandler,
   ) {}
 
-  async authenticate(email: string, password: string): Promise<{ id: string }> {
+  async authenticate(email: string, password: string): Promise<User> {
     const user = await this.userRepository.findByEmail(email);
 
     if (user === null) throw new UserNotFoundException();
     await this.validatePassword(user, password);
 
-    return {
-      id: user.props.id,
-    };
+    return user;
   }
 
   private async validatePassword(user: User, password: string) {
