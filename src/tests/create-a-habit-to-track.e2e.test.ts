@@ -2,32 +2,35 @@ import * as request from 'supertest';
 import { TestApp } from './utils/test-app';
 import { e2eUser } from './seeds/user-seeds';
 
-describe('Feature : create a habit to track', () => {
+describe('Feature : create habit to track', () => {
+  async function login(agent: request.SuperAgentTest) {
+    await agent.post('/login').send({
+      email: e2eUser.alice.entity.props.email,
+      password: 'Welcome@123',
+    });
+  }
+
   let app: TestApp;
+  let agent: request.SuperAgentTest;
 
   beforeEach(async () => {
     app = new TestApp();
     await app.setup();
     await app.loadFixtures([e2eUser.alice]);
+    agent = request.agent(app.getHttpServer());
   });
 
-  describe('Scenario : happy path', () => {
+  const payload = {
+    name: 'Brush my teeth',
+    cue: 'After my breakfast',
+    craving: 'Clean my teeth',
+    response: 'Brush my teeth during three minutes',
+    reward: 'Have a good feeling with fresh breath',
+  };
+
+  describe('Happy path', () => {
     it('should create the new habit', async () => {
-      const agent = request.agent(app.getHttpServer());
-
-      await agent.post('/login').send({
-        email: e2eUser.alice.entity.props.email,
-        password: 'Welcome@123',
-      });
-
-      const payload = {
-        name: 'Brush my teeth',
-        cue: 'After my breakfast',
-        craving: 'Clean my teeth',
-        response: 'Brush my teeth during three minutes',
-        reward: 'Have a good feeling with fresh breath',
-        userId: 'bob',
-      };
+      await login(agent);
 
       const result = await agent.post('/habits').send(payload);
 
@@ -37,15 +40,6 @@ describe('Feature : create a habit to track', () => {
 
   describe('Unhappy path', () => {
     it('should fail if user is not connected', async () => {
-      const payload = {
-        name: 'Brush my teeth',
-        cue: 'After my breakfast',
-        craving: 'Clean my teeth',
-        response: 'Brush my teeth during three minutes',
-        reward: 'Have a good feeling with fresh breath',
-        userId: 'bob',
-      };
-
       const result = await request(app.getHttpServer())
         .post('/habits')
         .send(payload);
