@@ -11,21 +11,21 @@ export class AuthService {
     private readonly passwordHandler: IPasswordHandler,
   ) {}
 
-  async authenticate(email: string, password: string): Promise<User> {
+  async authenticate(email: string, password: string): Promise<User | null> {
     const user = await this.userRepository.findByEmail(email);
 
-    if (user === null) throw new UserNotFoundException();
-    await this.validatePassword(user, password);
+    if (user === null) return null;
+    if ((await this.isPasswordValid(user, password)) === false) return null;
 
     return user;
   }
 
-  private async validatePassword(user: User, password: string) {
+  private async isPasswordValid(user: User, password: string) {
     const passwordIsValid = await this.passwordHandler.compare(
       password,
       user.props.password,
     );
 
-    if (!passwordIsValid) throw new UnauthorizedException();
+    return passwordIsValid;
   }
 }
