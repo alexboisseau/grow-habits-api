@@ -8,7 +8,6 @@ import { CommonModule } from '../common/common.module';
 import { InMemorySessionManager } from './adapters/in-memory-session-manager';
 import { I_SESSION_MANAGER } from './ports/session-manager.interface';
 import { I_PASSWORD_HANDLER } from '../common/ports/password-handler.interface';
-import { User } from './entities/user.entity';
 
 @Module({
   imports: [CommonModule],
@@ -16,13 +15,7 @@ import { User } from './entities/user.entity';
     {
       provide: I_USER_REPOSITORY,
       useFactory: () => {
-        return new InMemoryUserRepository([
-          new User({
-            id: '1',
-            email: 'alice@gmail.com',
-            password: 'hashed-Welcome@123',
-          }),
-        ]);
+        return new InMemoryUserRepository();
       },
     },
     {
