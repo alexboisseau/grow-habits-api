@@ -1,6 +1,6 @@
-import { IPasswordHasher } from '../ports/password-hasher.interface';
+import { IPasswordHandler } from '../../ports/password-handler.interface';
 
-export class FakePasswordHasher implements IPasswordHasher {
+export class FakePasswordHandler implements IPasswordHandler {
   private hashCalls: string[] = [];
 
   async hash(password: string): Promise<string> {

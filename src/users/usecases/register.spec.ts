@@ -1,6 +1,6 @@
 import { FixedIdGenerator } from '../../common/adapters/fixed-id-generator';
+import { FakePasswordHandler } from '../../common/adapters/password-handler/fake-password-handler';
 import { IIdGenerator } from '../../common/ports/id-generator.interface';
-import { FakePasswordHasher } from '../adapters/fake-password-hasher';
 import { InMemoryUserRepository } from '../adapters/in-memory-user-repository';
 import { User } from '../entities/user.entity';
 import { IUserRepository } from '../ports/user-repository.interface';
@@ -9,7 +9,7 @@ import { Register } from './register';
 describe('Feature: Register', () => {
   let userRepository: IUserRepository;
   let idGenerator: IIdGenerator;
-  let passwordHasher: FakePasswordHasher;
+  let passwordHasher: FakePasswordHandler;
   let usecase: Register;
 
   const bob = new User({
@@ -21,7 +21,7 @@ describe('Feature: Register', () => {
   beforeEach(() => {
     userRepository = new InMemoryUserRepository([bob]);
     idGenerator = new FixedIdGenerator();
-    passwordHasher = new FakePasswordHasher();
+    passwordHasher = new FakePasswordHandler();
     usecase = new Register(userRepository, idGenerator, passwordHasher);
   });
 

@@ -1,10 +1,10 @@
 import { IIdGenerator } from '../../common/ports/id-generator.interface';
+import { IPasswordHandler } from '../../common/ports/password-handler.interface';
 import { User } from '../entities/user.entity';
 import { ConfirmPasswordException } from '../exceptions/confirm-password';
 import { EmailAlreadyUsedException } from '../exceptions/email-already-used';
 import { EmailFormatException } from '../exceptions/email-format';
 import { PasswordLengthException } from '../exceptions/password-length';
-import { IPasswordHasher } from '../ports/password-hasher.interface';
 import { IUserRepository } from '../ports/user-repository.interface';
 
 type Request = {
@@ -21,7 +21,7 @@ export class Register {
   constructor(
     private readonly userRepository: IUserRepository,
     private readonly idGenerator: IIdGenerator,
-    private readonly passwordHasher: IPasswordHasher,
+    private readonly passwordHasher: IPasswordHandler,
   ) {}
 
   async execute(request: Request): Promise<Response> {
