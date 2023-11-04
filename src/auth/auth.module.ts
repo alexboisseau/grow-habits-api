@@ -7,9 +7,14 @@ import { LocalStrategy } from './local/local.strategy';
 import { I_USER_REPOSITORY } from '../users/ports/user-repository.interface';
 import { I_PASSWORD_HANDLER } from '../common/ports/password-handler.interface';
 import { AuthController } from './auth.controller';
+import { SessionSerializer } from './session/session.serializer';
 
 @Module({
-  imports: [UserModule, CommonModule, PassportModule],
+  imports: [
+    UserModule,
+    CommonModule,
+    PassportModule.register({ session: true }),
+  ],
   providers: [
     {
       provide: AuthService,
@@ -18,6 +23,11 @@ import { AuthController } from './auth.controller';
         new AuthService(userRepository, passwordHandler),
     },
     LocalStrategy,
+    {
+      provide: SessionSerializer,
+      inject: [I_USER_REPOSITORY],
+      useFactory: (userRepository) => new SessionSerializer(userRepository),
+    },
   ],
   controllers: [AuthController],
   exports: [],
