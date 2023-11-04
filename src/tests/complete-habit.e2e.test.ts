@@ -46,4 +46,18 @@ describe('Feature: completing a habit', () => {
       expect(completedHabit.props.status).toEqual('COMPLETED');
     });
   });
+
+  describe('Unhappy path', () => {
+    it('should fail if user is not connected', async () => {
+      const payload = {
+        date: '2023-01-03',
+      };
+
+      const result = await request(app.getHttpServer())
+        .post('/habits/id-1/complete')
+        .send(payload);
+
+      expect(result.status).toEqual(403);
+    });
+  });
 });

@@ -34,4 +34,23 @@ describe('Feature : create a habit to track', () => {
       expect(result.status).toEqual(201);
     });
   });
+
+  describe('Unhappy path', () => {
+    it('should fail if user is not connected', async () => {
+      const payload = {
+        name: 'Brush my teeth',
+        cue: 'After my breakfast',
+        craving: 'Clean my teeth',
+        response: 'Brush my teeth during three minutes',
+        reward: 'Have a good feeling with fresh breath',
+        userId: 'bob',
+      };
+
+      const result = await request(app.getHttpServer())
+        .post('/habits')
+        .send(payload);
+
+      expect(result.status).toEqual(403);
+    });
+  });
 });
