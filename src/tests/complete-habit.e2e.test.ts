@@ -10,25 +10,25 @@ import { e2eUser } from './seeds/user-seeds';
 
 describe('Feature: completing a habit', () => {
   let app: TestApp;
+  let agent: request.SuperAgentTest;
 
   beforeEach(async () => {
     app = new TestApp();
     await app.setup();
     await app.loadFixtures([e2eHabit.makeMyBed, e2eUser.alice]);
+    agent = request.agent(app.getHttpServer());
   });
+
+  const payload = {
+    date: '2023-01-03',
+  };
 
   describe('Happy path', () => {
     it('should complete the tracked habit', async () => {
-      const agent = request.agent(app.getHttpServer());
-
       await agent.post('/login').send({
         email: e2eUser.alice.entity.props.email,
         password: 'Welcome@123',
       });
-
-      const payload = {
-        date: '2023-01-03',
-      };
 
       const result = await agent.post('/habits/id-1/complete').send(payload);
 
@@ -49,13 +49,7 @@ describe('Feature: completing a habit', () => {
 
   describe('Unhappy path', () => {
     it('should fail if user is not connected', async () => {
-      const payload = {
-        date: '2023-01-03',
-      };
-
-      const result = await request(app.getHttpServer())
-        .post('/habits/id-1/complete')
-        .send(payload);
+      const result = await agent.post('/habits/id-1/complete').send(payload);
 
       expect(result.status).toEqual(403);
     });
