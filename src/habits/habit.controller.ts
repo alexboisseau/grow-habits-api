@@ -1,8 +1,10 @@
-import { Body, Controller, Param, Post } from '@nestjs/common';
+import { Body, Controller, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { CreateAHabitToTrack } from './usecases/create-a-habit-to-track';
 import { HabitAPI } from './contract';
 import { ZodValidationPipe } from '../core/pipes/zod-validation.pipe';
 import { CompleteHabit } from './usecases/complete-habit';
+import { SessionGuard } from '../auth/session/session.guard';
+import { User } from '../users/entities/user.entity';
 
 @Controller()
 export class HabitController {
@@ -11,31 +13,31 @@ export class HabitController {
     private readonly completeHabit: CompleteHabit,
   ) {}
 
+  @UseGuards(SessionGuard)
   @Post('/habits')
   async handleCreateAHabitToTrack(
     @Body(new ZodValidationPipe(HabitAPI.CreateAHabitToTrack.schema))
     body: HabitAPI.CreateAHabitToTrack.Request,
+    @Req() req: Request & { user: User },
   ) {
     return await this.createAHabitToTrack.execute({
       ...body,
-      userId: 'bob',
+      userId: req.user.props.id,
     });
   }
 
+  @UseGuards(SessionGuard)
   @Post('/habits/:habitId/complete')
   async handleCompleteHabit(
     @Body(new ZodValidationPipe(HabitAPI.CompleteHabit.schema))
     body: HabitAPI.CompleteHabit.Request,
     @Param('habitId') habitId: string,
+    @Req() req: Request & { user: User },
   ) {
     return await this.completeHabit.execute({
       ...body,
       habitId,
-      user: {
-        props: {
-          id: 'bob',
-        },
-      },
+      user: req.user,
     });
   }
 }
