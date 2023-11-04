@@ -3,6 +3,9 @@ import { Test } from '@nestjs/testing';
 import { AppModule } from '../../core/app.module';
 import { IFixture } from '../fixtures/fixture.interface';
 
+import * as session from 'express-session';
+import * as passport from 'passport';
+
 export class TestApp {
   private app: INestApplication;
 
@@ -12,6 +15,20 @@ export class TestApp {
     }).compile();
 
     this.app = module.createNestApplication();
+
+    this.app.use(
+      session({
+        secret: 'GFxlDDu25cdHqLbnxEXxqMnTtgs6eVQdRYUIjyMrYX4=',
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+          maxAge: 3600000,
+        },
+      }),
+    );
+
+    this.app.use(passport.initialize());
+    this.app.use(passport.session());
     await this.app.init();
   }
 
