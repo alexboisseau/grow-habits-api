@@ -1,4 +1,4 @@
-import { e2eUser } from './seeds/user-seeds';
+import { e2eUsers } from './seeds/user-seeds';
 import { TestApp } from './utils/test-app';
 import * as request from 'supertest';
 
@@ -13,14 +13,14 @@ describe('Feature: login', () => {
   beforeEach(async () => {
     app = new TestApp();
     await app.setup();
-    await app.loadFixtures([e2eUser.alice]);
+    await app.loadFixtures([e2eUsers.alice]);
     agent = request.agent(app.getHttpServer());
   });
 
   describe('Happy path', () => {
     it('should logged in', async () => {
       const payload = {
-        email: e2eUser.alice.entity.props.email,
+        email: e2eUsers.alice.entity.props.email,
         password: 'Welcome@123',
       };
 

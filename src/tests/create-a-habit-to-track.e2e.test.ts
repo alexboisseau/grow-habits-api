@@ -1,11 +1,11 @@
 import * as request from 'supertest';
 import { TestApp } from './utils/test-app';
-import { e2eUser } from './seeds/user-seeds';
+import { e2eUsers } from './seeds/user-seeds';
 
 describe('Feature : create habit to track', () => {
   async function login(agent: request.SuperAgentTest) {
     await agent.post('/login').send({
-      email: e2eUser.alice.entity.props.email,
+      email: e2eUsers.alice.entity.props.email,
       password: 'Welcome@123',
     });
   }
@@ -16,7 +16,7 @@ describe('Feature : create habit to track', () => {
   beforeEach(async () => {
     app = new TestApp();
     await app.setup();
-    await app.loadFixtures([e2eUser.alice]);
+    await app.loadFixtures([e2eUsers.alice]);
     agent = request.agent(app.getHttpServer());
   });
 

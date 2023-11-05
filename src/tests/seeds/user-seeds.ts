@@ -1,7 +1,7 @@
 import { User } from '../../users/entities/user.entity';
 import { UserFixture } from '../fixtures/user-fixture';
 
-export const e2eUser = {
+export const e2eUsers = {
   alice: new UserFixture(
     new User({
       id: 'id-1',

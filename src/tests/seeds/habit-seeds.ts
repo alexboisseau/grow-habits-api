@@ -1,7 +1,7 @@
 import { Habit } from '../../habits/entities/habit.entity';
 import { HabitFixture } from '../fixtures/habit-fixture';
 
-export const e2eHabit = {
+export const e2eHabits = {
   makeMyBed: new HabitFixture(
     new Habit({
       id: 'id-1',

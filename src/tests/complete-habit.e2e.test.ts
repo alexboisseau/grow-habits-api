@@ -1,17 +1,17 @@
 import * as request from 'supertest';
 import { TestApp } from './utils/test-app';
-import { e2eHabit } from './seeds/habit-seeds';
+import { e2eHabits } from './seeds/habit-seeds';
 import {
   ITrackedHabitRepository,
   I_TRACKED_HABIT_REPOSITORY,
 } from '../habits/ports/tracked-habit-repository.interface';
 import { TrackedHabit } from '../habits/entities/tracked-habit.entity';
-import { e2eUser } from './seeds/user-seeds';
+import { e2eUsers } from './seeds/user-seeds';
 
 describe('Feature: complete habit', () => {
   async function login(agent: request.SuperAgentTest) {
     await agent.post('/login').send({
-      email: e2eUser.alice.entity.props.email,
+      email: e2eUsers.alice.entity.props.email,
       password: 'Welcome@123',
     });
   }
@@ -22,7 +22,7 @@ describe('Feature: complete habit', () => {
   beforeEach(async () => {
     app = new TestApp();
     await app.setup();
-    await app.loadFixtures([e2eHabit.makeMyBed, e2eUser.alice]);
+    await app.loadFixtures([e2eHabits.makeMyBed, e2eUsers.alice]);
     agent = request.agent(app.getHttpServer());
   });
 
