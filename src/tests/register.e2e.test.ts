@@ -1,7 +1,7 @@
 import { TestApp } from './utils/test-app';
 import * as request from 'supertest';
 
-describe('Feature: registering a user', () => {
+describe('Feature: register a user', () => {
   let app: TestApp;
 
   beforeEach(async () => {
