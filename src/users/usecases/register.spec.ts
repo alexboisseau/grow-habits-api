@@ -4,6 +4,7 @@ import { IIdGenerator } from '../../common/ports/id-generator.interface';
 import { InMemoryUserRepository } from '../adapters/in-memory-user-repository';
 import { User } from '../entities/user.entity';
 import { IUserRepository } from '../ports/user-repository.interface';
+import { userSeeds } from '../tests/user-seeds';
 import { Register } from './register';
 
 describe('Feature: Register', () => {
@@ -12,14 +13,8 @@ describe('Feature: Register', () => {
   let passwordHasher: FakePasswordHandler;
   let usecase: Register;
 
-  const bob = new User({
-    id: 'id-2',
-    email: 'bob@gmail.com',
-    password: 'azerty',
-  });
-
   beforeEach(() => {
-    userRepository = new InMemoryUserRepository([bob]);
+    userRepository = new InMemoryUserRepository([userSeeds.bob]);
     idGenerator = new FixedIdGenerator();
     passwordHasher = new FakePasswordHandler();
     usecase = new Register(userRepository, idGenerator, passwordHasher);
@@ -103,7 +98,7 @@ describe('Feature: Register', () => {
 
     it('should fail if the email is already used', async () => {
       const payload = {
-        email: bob.props.email,
+        email: userSeeds.bob.props.email,
         password: '12345678',
         confirmPassword: '12345678',
       };

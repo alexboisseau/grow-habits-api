@@ -1,5 +1,6 @@
 import { FixedDateGenerator } from '../../common/adapters/fixed-date-generator';
 import { FixedIdGenerator } from '../../common/adapters/fixed-id-generator';
+import { userSeeds } from '../../users/tests/user-seeds';
 import { InMemoryHabitRepository } from '../adapters/in-memory-habit-repository';
 import { Habit } from '../entities/habit.entity';
 import { CreateAHabitToTrack } from './create-a-habit-to-track';
@@ -8,7 +9,7 @@ describe('Feature : create a habit to track', () => {
   function expectHabitToEqual(habit: Habit) {
     expect(habit.props).toEqual({
       id: 'id-1',
-      userId: 'bob',
+      userId: userSeeds.alice.props.id,
       trackedFrom: dateGenerator.now(),
       name: 'Brush my teeth',
       cue: 'After my breakfast',
@@ -41,7 +42,7 @@ describe('Feature : create a habit to track', () => {
       craving: 'Clean my teeth',
       response: 'Brush my teeth during three minutes',
       reward: 'Have a good feeling with fresh breath',
-      userId: 'bob',
+      userId: userSeeds.alice.props.id,
     };
 
     it('should create a new habit and return an id', async () => {

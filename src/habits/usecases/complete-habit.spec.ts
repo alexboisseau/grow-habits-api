@@ -1,5 +1,6 @@
 import { FixedDateGenerator } from '../../common/adapters/fixed-date-generator';
 import { FixedIdGenerator } from '../../common/adapters/fixed-id-generator';
+import { userSeeds } from '../../users/tests/user-seeds';
 import { InMemoryHabitRepository } from '../adapters/in-memory-habit-repository';
 import { InMemoryTrackedHabitRepository } from '../adapters/in-memory-tracked-repository';
 import { Habit } from '../entities/habit.entity';
@@ -7,15 +8,9 @@ import { TrackedHabit } from '../entities/tracked-habit.entity';
 import { CompleteHabit } from './complete-habit';
 
 describe('Feature : complete a tracked habit', () => {
-  const bob = {
-    props: {
-      id: 'bob',
-    },
-  };
-
   const habit = new Habit({
     id: 'id-1',
-    userId: 'bob',
+    userId: userSeeds.alice.props.id,
     trackedFrom: new Date('2023-01-01'),
     name: 'Brush my teeth',
     cue: 'After my breakfast',
@@ -29,7 +24,7 @@ describe('Feature : complete a tracked habit', () => {
     habitId: 'id-1',
     id: 'id-1',
     status: 'TO_COMPLETE',
-    userId: 'bob',
+    userId: userSeeds.alice.props.id,
   });
 
   let trackedHabitRepository: InMemoryTrackedHabitRepository;
@@ -59,7 +54,7 @@ describe('Feature : complete a tracked habit', () => {
         const payload = {
           habitId: uncompletedTrackedHabit.props.habitId,
           date: uncompletedTrackedHabit.props.date,
-          user: bob,
+          user: userSeeds.alice,
         };
 
         await useCase.execute({ ...payload });
@@ -82,7 +77,7 @@ describe('Feature : complete a tracked habit', () => {
         const payload = {
           habitId: 'id-1',
           date: '2023-01-03',
-          user: bob,
+          user: userSeeds.alice,
         };
 
         await useCase.execute({
@@ -101,53 +96,47 @@ describe('Feature : complete a tracked habit', () => {
           habitId: payload.habitId,
           id: 'id-1',
           status: 'COMPLETED',
-          userId: 'bob',
+          userId: userSeeds.alice.props.id,
         });
       });
     });
   });
 
   describe('Unhappy path', () => {
-    describe('Scenario: complete tracked habit related to a non-existing habit', () => {
-      it('should fail', async () => {
-        const payload = {
-          habitId: 'invalid-id',
-          date: '2023-01-02',
-          user: bob,
-        };
+    it('should fail if tracked habit related to a non-existing habit', async () => {
+      const payload = {
+        habitId: 'invalid-id',
+        date: '2023-01-02',
+        user: userSeeds.alice,
+      };
 
-        await expect(() => useCase.execute({ ...payload })).rejects.toThrow(
-          'Habit not found',
-        );
-      });
+      await expect(() => useCase.execute({ ...payload })).rejects.toThrow(
+        'Habit not found',
+      );
     });
 
-    describe('Scenario: complete tracked habit in the future', () => {
-      it('should fail', async () => {
-        const payload = {
-          habitId: uncompletedTrackedHabit.props.habitId,
-          date: '2024-01-02',
-          user: bob,
-        };
+    it('should fail if tracked habit is in the future', async () => {
+      const payload = {
+        habitId: uncompletedTrackedHabit.props.habitId,
+        date: '2024-01-02',
+        user: userSeeds.alice,
+      };
 
-        await expect(() => useCase.execute({ ...payload })).rejects.toThrow(
-          'Tracked habit date cannot be in the future',
-        );
-      });
+      await expect(() => useCase.execute({ ...payload })).rejects.toThrow(
+        'Tracked habit date cannot be in the future',
+      );
     });
 
-    describe('Scenario: complete tracked habit before the tracked from date', () => {
-      it('should fail', async () => {
-        const payload = {
-          habitId: uncompletedTrackedHabit.props.habitId,
-          date: '2022-12-31',
-          user: bob,
-        };
+    it('should fail if tracked habit is before the started habit date', async () => {
+      const payload = {
+        habitId: uncompletedTrackedHabit.props.habitId,
+        date: '2022-12-31',
+        user: userSeeds.alice,
+      };
 
-        await expect(() => useCase.execute({ ...payload })).rejects.toThrow(
-          "Completion date must be after the habit's start date.",
-        );
-      });
+      await expect(() => useCase.execute({ ...payload })).rejects.toThrow(
+        "Completion date must be after the habit's start date.",
+      );
     });
   });
 });
