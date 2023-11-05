@@ -3,25 +3,14 @@ import { FixedIdGenerator } from '../../common/adapters/fixed-id-generator';
 import { userSeeds } from '../../users/tests/user-seeds';
 import { InMemoryHabitRepository } from '../adapters/in-memory-habit-repository';
 import { InMemoryTrackedHabitRepository } from '../adapters/in-memory-tracked-repository';
-import { Habit } from '../entities/habit.entity';
 import { TrackedHabit } from '../entities/tracked-habit.entity';
+import { habitSeeds } from '../tests/habitSeeds';
 import { CompleteHabit } from './complete-habit';
 
 describe('Feature : complete a tracked habit', () => {
-  const habit = new Habit({
-    id: 'id-1',
-    userId: userSeeds.alice.props.id,
-    trackedFrom: new Date('2023-01-01'),
-    name: 'Brush my teeth',
-    cue: 'After my breakfast',
-    craving: 'Clean my teeth',
-    response: 'Brush my teeth during three minutes',
-    reward: 'Have a good feeling with fresh breath',
-  });
-
   const uncompletedTrackedHabit = new TrackedHabit({
     date: '2023-01-02',
-    habitId: 'id-1',
+    habitId: habitSeeds.makeMyBed.props.id,
     id: 'id-1',
     status: 'TO_COMPLETE',
     userId: userSeeds.alice.props.id,
@@ -37,7 +26,7 @@ describe('Feature : complete a tracked habit', () => {
     trackedHabitRepository = new InMemoryTrackedHabitRepository([
       uncompletedTrackedHabit,
     ]);
-    habitRepository = new InMemoryHabitRepository([habit]);
+    habitRepository = new InMemoryHabitRepository([habitSeeds.makeMyBed]);
     idGenerator = new FixedIdGenerator();
     dateGenerator = new FixedDateGenerator();
     useCase = new CompleteHabit(
@@ -75,7 +64,7 @@ describe('Feature : complete a tracked habit', () => {
     describe('Scenario: tracked habit does not already exist', () => {
       it('should create and complete the tracked habit', async () => {
         const payload = {
-          habitId: 'id-1',
+          habitId: habitSeeds.makeMyBed.props.id,
           date: '2023-01-03',
           user: userSeeds.alice,
         };
