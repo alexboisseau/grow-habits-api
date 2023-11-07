@@ -12,8 +12,7 @@ async function bootstrap() {
   const redisClient = createClient();
   redisClient
     .connect()
-    .then((res) => console.log(res))
-    .catch(console.error);
+    .catch((err) => console.error('Redis Client Error :', err));
 
   const redisStore = new RedisStore({
     client: redisClient,
