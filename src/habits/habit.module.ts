@@ -1,28 +1,36 @@
 import { Module } from '@nestjs/common';
 import { CreateAHabitToTrack } from './usecases/create-a-habit-to-track';
-import { InMemoryHabitRepository } from './adapters/in-memory-habit-repository';
 import { I_HABIT_REPOSITORY } from './ports/habit-repository.interface';
 import { I_DATE_GENERATOR } from '../common/ports/date-generator.interface';
 import { I_ID_GENERATOR } from '../common/ports/id-generator.interface';
 import { HabitController } from './habit.controller';
 import { CommonModule } from '../common/common.module';
 import { CompleteHabit } from './usecases/complete-habit';
-import { InMemoryTrackedHabitRepository } from './adapters/in-memory-tracked-repository';
 import { I_TRACKED_HABIT_REPOSITORY } from './ports/tracked-habit-repository.interface';
+import { PrismaModule } from '../prisma/prisma.module';
+import { PRISMA_SERVICE } from '../prisma/prisma.service';
+import { PrismaHabitMapper } from './adapters/prisma/prisma-habit-mapper';
+import { PrismaHabitRepository } from './adapters/prisma/prisma-habit-repository';
+import { PrismaTrackedHabitRepository } from './adapters/prisma/prisma-tracked-habit-repository';
+import { PrismaTrackedHabitMapper } from './adapters/prisma/prisma-tracked-habit-mapper';
 
 @Module({
-  imports: [CommonModule],
+  imports: [CommonModule, PrismaModule],
   providers: [
+    PrismaHabitMapper,
+    PrismaTrackedHabitMapper,
     {
       provide: I_HABIT_REPOSITORY,
-      useFactory: () => {
-        return new InMemoryHabitRepository();
+      inject: [PRISMA_SERVICE, PrismaHabitMapper],
+      useFactory: (client, mapper) => {
+        return new PrismaHabitRepository(client, mapper);
       },
     },
     {
       provide: I_TRACKED_HABIT_REPOSITORY,
-      useFactory: () => {
-        return new InMemoryTrackedHabitRepository();
+      inject: [PRISMA_SERVICE, PrismaTrackedHabitMapper],
+      useFactory: (client, mapper) => {
+        return new PrismaTrackedHabitRepository(client, mapper);
       },
     },
     {
