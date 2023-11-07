@@ -1,6 +1,4 @@
-import { BadRequestException } from '@nestjs/common';
-
-export class EmailFormatException extends BadRequestException {
+export class EmailFormatException extends Error {
   constructor() {
     super('Invalid email format');
   }

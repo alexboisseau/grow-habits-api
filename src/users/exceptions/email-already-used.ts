@@ -1,6 +1,4 @@
-import { BadRequestException } from '@nestjs/common';
-
-export class EmailAlreadyUsedException extends BadRequestException {
+export class EmailAlreadyUsedException extends Error {
   constructor() {
     super('Email already used');
   }

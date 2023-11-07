@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { UserController } from './user.controller';
 import { Register } from './usecases/register';
 import { I_USER_REPOSITORY } from './ports/user-repository.interface';
 import { I_ID_GENERATOR } from '../common/ports/id-generator.interface';
@@ -11,11 +10,14 @@ import { PrismaUserRepository } from './adapters/prisma/prisma-user-repository';
 import { PrismaUserMapper } from './adapters/prisma/prisma-user-mapper';
 import { PrismaModule } from '../prisma/prisma.module';
 import { PRISMA_SERVICE } from '../prisma/prisma.service';
+import { HttpUserExceptionsMapper } from './presenters/http/http-exceptions-mapper';
+import { HttpUserPresenter } from './presenters/http/http-user-presenter';
 
 @Module({
   imports: [CommonModule, PrismaModule],
   providers: [
     PrismaUserMapper,
+    HttpUserExceptionsMapper,
     {
       provide: I_USER_REPOSITORY,
       inject: [PRISMA_SERVICE, PrismaUserMapper],
@@ -37,7 +39,7 @@ import { PRISMA_SERVICE } from '../prisma/prisma.service';
       },
     },
   ],
-  controllers: [UserController],
+  controllers: [HttpUserPresenter],
   exports: [I_USER_REPOSITORY],
 })
 export class UserModule {}
