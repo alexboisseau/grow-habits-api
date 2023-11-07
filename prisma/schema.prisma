@@ -12,7 +12,7 @@ datasource db {
 
 model User {
   id           String         @unique @default(uuid())
-  email        String
+  email        String         @unique
   password     String
   habits       Habit[]
   TrackedHabit TrackedHabit[]
