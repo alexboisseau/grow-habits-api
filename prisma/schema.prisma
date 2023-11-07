@@ -1,0 +1,47 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String         @unique @default(uuid())
+  email        String
+  password     String
+  habits       Habit[]
+  TrackedHabit TrackedHabit[]
+}
+
+model Habit {
+  id           String         @unique @default(uuid())
+  name         String
+  cue          String
+  craving      String
+  response     String
+  reward       String
+  trackedFrom  DateTime
+  user         User           @relation(fields: [userId], references: [id])
+  userId       String
+  TrackedHabit TrackedHabit[]
+}
+
+model TrackedHabit {
+  id      String             @unique @default(uuid())
+  status  TrackedHabitStatus
+  date    String
+  habit   Habit              @relation(fields: [habitId], references: [id])
+  habitId String
+  user    User               @relation(fields: [userId], references: [id])
+  userId  String
+}
+
+enum TrackedHabitStatus {
+  TO_COMPLETE
+  COMPLETED
+}
