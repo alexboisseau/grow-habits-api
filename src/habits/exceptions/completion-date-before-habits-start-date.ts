@@ -1,6 +1,4 @@
-import { BadRequestException } from '@nestjs/common';
-
-export class CompletionDateBeforeHabitsStartDateException extends BadRequestException {
+export class CompletionDateBeforeHabitsStartDateException extends Error {
   constructor() {
     super("Completion date must be after the habit's start date.");
   }

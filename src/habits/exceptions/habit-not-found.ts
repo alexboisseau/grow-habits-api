@@ -1,6 +1,4 @@
-import { NotFoundException } from '@nestjs/common';
-
-export class HabitNotFoundException extends NotFoundException {
+export class HabitNotFoundException extends Error {
   constructor() {
     super('Habit not found');
   }

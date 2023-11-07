@@ -3,7 +3,7 @@ import { CreateAHabitToTrack } from './usecases/create-a-habit-to-track';
 import { I_HABIT_REPOSITORY } from './ports/habit-repository.interface';
 import { I_DATE_GENERATOR } from '../common/ports/date-generator.interface';
 import { I_ID_GENERATOR } from '../common/ports/id-generator.interface';
-import { HabitController } from './habit.controller';
+import { HttpHabitPresenter } from './presenters/http/http-habit-presenter';
 import { CommonModule } from '../common/common.module';
 import { CompleteHabit } from './usecases/complete-habit';
 import { I_TRACKED_HABIT_REPOSITORY } from './ports/tracked-habit-repository.interface';
@@ -13,12 +13,14 @@ import { PrismaHabitMapper } from './adapters/prisma/prisma-habit-mapper';
 import { PrismaHabitRepository } from './adapters/prisma/prisma-habit-repository';
 import { PrismaTrackedHabitRepository } from './adapters/prisma/prisma-tracked-habit-repository';
 import { PrismaTrackedHabitMapper } from './adapters/prisma/prisma-tracked-habit-mapper';
+import { HttpHabitExceptionsMapper } from './presenters/http/http-habit-exception-mapper';
 
 @Module({
   imports: [CommonModule, PrismaModule],
   providers: [
     PrismaHabitMapper,
     PrismaTrackedHabitMapper,
+    HttpHabitExceptionsMapper,
     {
       provide: I_HABIT_REPOSITORY,
       inject: [PRISMA_SERVICE, PrismaHabitMapper],
@@ -67,6 +69,6 @@ import { PrismaTrackedHabitMapper } from './adapters/prisma/prisma-tracked-habit
       },
     },
   ],
-  controllers: [HabitController],
+  controllers: [HttpHabitPresenter],
 })
 export class HabitModule {}
