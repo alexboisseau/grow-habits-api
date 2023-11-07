@@ -1,21 +1,26 @@
 import { Module } from '@nestjs/common';
 import { UserController } from './user.controller';
 import { Register } from './usecases/register';
-import { InMemoryUserRepository } from './adapters/in-memory-user-repository';
 import { I_USER_REPOSITORY } from './ports/user-repository.interface';
 import { I_ID_GENERATOR } from '../common/ports/id-generator.interface';
 import { CommonModule } from '../common/common.module';
 import { InMemorySessionManager } from './adapters/in-memory-session-manager';
 import { I_SESSION_MANAGER } from './ports/session-manager.interface';
 import { I_PASSWORD_HANDLER } from '../common/ports/password-handler.interface';
+import { PrismaUserRepository } from './adapters/prisma/prisma-user-repository';
+import { PrismaUserMapper } from './adapters/prisma/prisma-user-mapper';
+import { PrismaModule } from '../prisma/prisma.module';
+import { PRISMA_SERVICE } from '../prisma/prisma.service';
 
 @Module({
-  imports: [CommonModule],
+  imports: [CommonModule, PrismaModule],
   providers: [
+    PrismaUserMapper,
     {
       provide: I_USER_REPOSITORY,
-      useFactory: () => {
-        return new InMemoryUserRepository();
+      inject: [PRISMA_SERVICE, PrismaUserMapper],
+      useFactory: (prisma, mapper) => {
+        return new PrismaUserRepository(prisma, mapper);
       },
     },
     {
