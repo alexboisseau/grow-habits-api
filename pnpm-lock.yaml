@@ -100,6 +100,9 @@ devDependencies:
   prettier:
     specifier: ^2.3.2
     version: 2.8.8
+  prisma:
+    specifier: ^5.5.2
+    version: 5.5.2
   source-map-support:
     specifier: ^0.5.20
     version: 0.5.21
@@ -1184,6 +1187,11 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /@prisma/engines@5.5.2:
+    resolution: {integrity: sha512-Be5hoNF8k+lkB3uEMiCHbhbfF6aj1GnrTBnn5iYFT7GEr3TsOEp1soviEcBR0tYCgHbxjcIxJMhdbvxALJhAqg==}
+    requiresBuild: true
+    dev: true
 
   /@redis/bloom@1.2.0(@redis/client@1.5.11):
     resolution: {integrity: sha512-HG2DFjYKbpNmVXsa0keLHp/3leGJz1mjh09f2RLGGLQZzSHpkmZWuwJbAvo3QcRY8p80m5+ZdXZdYOSBLlp7Cg==}
@@ -4703,6 +4711,15 @@ packages:
       '@jest/schemas': 29.6.3
       ansi-styles: 5.2.0
       react-is: 18.2.0
+    dev: true
+
+  /prisma@5.5.2:
+    resolution: {integrity: sha512-WQtG6fevOL053yoPl6dbHV+IWgKo25IRN4/pwAGqcWmg7CrtoCzvbDbN9fXUc7QS2KK0LimHIqLsaCOX/vHl8w==}
+    engines: {node: '>=16.13'}
+    hasBin: true
+    requiresBuild: true
+    dependencies:
+      '@prisma/engines': 5.5.2
     dev: true
 
   /process-nextick-args@2.0.1:
