@@ -9,6 +9,10 @@ describe('Feature: register a user', () => {
     await app.setup();
   });
 
+  afterEach(async () => {
+    await app.cleanUp();
+  });
+
   describe('Happy path', () => {
     it('should register the user', async () => {
       const payload = {

@@ -22,8 +22,12 @@ describe('Feature: complete habit', () => {
   beforeEach(async () => {
     app = new TestApp();
     await app.setup();
-    await app.loadFixtures([e2eHabits.makeMyBed, e2eUsers.alice]);
+    await app.loadFixtures([e2eUsers.alice, e2eHabits.makeMyBed]);
     agent = request.agent(app.getHttpServer());
+  });
+
+  afterEach(async () => {
+    await app.cleanUp();
   });
 
   const payload = {

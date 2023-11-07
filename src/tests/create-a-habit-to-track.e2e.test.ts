@@ -20,6 +20,10 @@ describe('Feature : create habit to track', () => {
     agent = request.agent(app.getHttpServer());
   });
 
+  afterEach(async () => {
+    await app.cleanUp();
+  });
+
   const payload = {
     name: 'Brush my teeth',
     cue: 'After my breakfast',

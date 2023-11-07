@@ -17,6 +17,10 @@ describe('Feature: login', () => {
     agent = request.agent(app.getHttpServer());
   });
 
+  afterEach(async () => {
+    await app.cleanUp();
+  });
+
   describe('Happy path', () => {
     it('should logged in', async () => {
       const payload = {
