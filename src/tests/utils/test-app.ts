@@ -5,6 +5,7 @@ import { IFixture } from '../fixtures/fixture.interface';
 
 import * as session from 'express-session';
 import * as passport from 'passport';
+import { PRISMA_SERVICE, PrismaService } from '../../prisma/prisma.service';
 
 export class TestApp {
   private app: INestApplication;
@@ -34,6 +35,7 @@ export class TestApp {
 
   async cleanUp() {
     await this.app.close();
+    await this.clearDatabase();
   }
 
   get<T>(name: any) {
@@ -45,6 +47,21 @@ export class TestApp {
   }
 
   async loadFixtures(fixtures: IFixture[]) {
-    return await Promise.all(fixtures.map((fixture) => fixture.load(this)));
+    const loadFixtureSequentially = async (
+      accumulator: Promise<void>,
+      fixture: IFixture,
+    ) => {
+      await accumulator;
+      return fixture.load(this);
+    };
+
+    return fixtures.reduce(loadFixtureSequentially, Promise.resolve());
+  }
+
+  private async clearDatabase() {
+    const prisma = this.app.get<PrismaService>(PRISMA_SERVICE);
+    await prisma.trackedHabit.deleteMany({});
+    await prisma.habit.deleteMany({});
+    await prisma.user.deleteMany({});
   }
 }
