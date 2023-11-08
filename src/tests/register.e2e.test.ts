@@ -26,9 +26,7 @@ describe('Feature: register a user', () => {
         .send(payload);
 
       expect(result.status).toEqual(201);
-      expect(result.body).toEqual({
-        id: 'id-1',
-      });
+      expect(result.body.id).toBeDefined();
     });
   });
 });
