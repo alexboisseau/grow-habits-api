@@ -23,8 +23,11 @@ export class PrismaTrackedHabitRepository implements ITrackedHabitRepository {
     trackedHabitId: string,
     date: string,
   ): Promise<TrackedHabit | null> {
-    const trackedHabit = await this.prisma.trackedHabit.findUnique({
-      where: { id: trackedHabitId, date },
+    const trackedHabit = await this.prisma.trackedHabit.findFirst({
+      where: {
+        habitId: trackedHabitId,
+        date: date,
+      },
     });
 
     if (!trackedHabit) return null;
