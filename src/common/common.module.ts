@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { I_DATE_GENERATOR } from './ports/date-generator.interface';
 import { I_ID_GENERATOR } from './ports/id-generator.interface';
 import { CurrentDateGenerator } from './adapters/current-date-generator';
-import { FixedIdGenerator } from './adapters/fixed-id-generator';
 import { I_PASSWORD_HANDLER } from './ports/password-handler.interface';
 import { FakePasswordHandler } from './adapters/password-handler/fake-password-handler';
+import { RandomIdGenerator } from './adapters/random-id-generator';
 
 @Module({
   providers: [
@@ -17,7 +17,7 @@ import { FakePasswordHandler } from './adapters/password-handler/fake-password-h
     {
       provide: I_ID_GENERATOR,
       useFactory: () => {
-        return new FixedIdGenerator();
+        return new RandomIdGenerator();
       },
     },
     {
