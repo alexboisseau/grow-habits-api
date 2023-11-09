@@ -20,6 +20,9 @@ dependencies:
   '@prisma/client':
     specifier: ^5.5.2
     version: 5.5.2(prisma@5.5.2)
+  '@types/bcrypt':
+    specifier: ^5.0.2
+    version: 5.0.2
   bcrypt:
     specifier: ^5.1.1
     version: 5.1.1
@@ -1425,6 +1428,12 @@ packages:
       '@babel/types': 7.23.0
     dev: true
 
+  /@types/bcrypt@5.0.2:
+    resolution: {integrity: sha512-6atioO8Y75fNcbmj0G7UjI9lXN2pQ/IGJ2FWT4a/btd0Lk9lQalHLKhkgKVZ3r+spnmWUKfbMi1GEe9wyHQfNQ==}
+    dependencies:
+      '@types/node': 18.15.11
+    dev: false
+
   /@types/body-parser@1.19.4:
     resolution: {integrity: sha512-N7UDG0/xiPQa2D/XrVJXjkWbpqHCd2sBaB32ggRF2l83RhPfamgKGF8gwwqyksS95qUS5ZYF9aF+lLPRlwI2UA==}
     dependencies:
@@ -1531,7 +1540,6 @@ packages:
 
   /@types/node@18.15.11:
     resolution: {integrity: sha512-E5Kwq2n4SbMzQOn6wnmBjuK9ouqlURrcZDVfbo9ftDDTFt3nk7ZKK4GMOzoYgnpQJKcxwQw+lGaBvvlMo0qN/Q==}
-    dev: true
 
   /@types/parse-json@4.0.1:
     resolution: {integrity: sha512-3YmXzzPAdOTVljVMkTMBdBEvlOLg2cDQaDhnnhT3nT9uDbnJzjWhKlzb+desT12Y7tGqaN6d+AbozcKzyL36Ng==}
