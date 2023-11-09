@@ -1,4 +1,4 @@
-import { FixedIdGenerator } from '../../common/adapters/fixed-id-generator';
+import { FixedIdGenerator } from '../../common/adapters/id-generator/fixed-id-generator';
 import { FakePasswordHandler } from '../../common/adapters/password-handler/fake-password-handler';
 import { IIdGenerator } from '../../common/ports/id-generator.interface';
 import { InMemoryUserRepository } from '../adapters/in-memory-user-repository';

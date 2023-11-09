@@ -1,5 +1,5 @@
-import { FixedDateGenerator } from '../../common/adapters/fixed-date-generator';
-import { FixedIdGenerator } from '../../common/adapters/fixed-id-generator';
+import { FixedDateGenerator } from '../../common/adapters/date-generator/fixed-date-generator';
+import { FixedIdGenerator } from '../../common/adapters/id-generator/fixed-id-generator';
 import { userSeeds } from '../../users/tests/user-seeds';
 import { InMemoryHabitRepository } from '../adapters/in-memory-habit-repository';
 import { Habit } from '../entities/habit.entity';

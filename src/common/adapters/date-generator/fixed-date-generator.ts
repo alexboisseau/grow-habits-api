@@ -1,4 +1,4 @@
-import { IDateGenerator } from '../ports/date-generator.interface';
+import { IDateGenerator } from '../../ports/date-generator.interface';
 
 export class FixedDateGenerator implements IDateGenerator {
   now() {
