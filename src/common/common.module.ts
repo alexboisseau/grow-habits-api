@@ -3,8 +3,8 @@ import { I_DATE_GENERATOR } from './ports/date-generator.interface';
 import { I_ID_GENERATOR } from './ports/id-generator.interface';
 import { CurrentDateGenerator } from './adapters/current-date-generator';
 import { I_PASSWORD_HANDLER } from './ports/password-handler.interface';
-import { FakePasswordHandler } from './adapters/password-handler/fake-password-handler';
 import { RandomIdGenerator } from './adapters/random-id-generator';
+import { BcryptPasswordHandler } from './adapters/password-handler/bcrypt-password-handler';
 
 @Module({
   providers: [
@@ -23,7 +23,7 @@ import { RandomIdGenerator } from './adapters/random-id-generator';
     {
       provide: I_PASSWORD_HANDLER,
       useFactory: () => {
-        return new FakePasswordHandler();
+        return new BcryptPasswordHandler();
       },
     },
   ],
