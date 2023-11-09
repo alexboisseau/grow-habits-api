@@ -1,7 +1,6 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { IUserRepository } from '../../users/ports/user-repository.interface';
 import { User } from '../../users/entities/user.entity';
-import { UserNotFoundException } from '../../users/exceptions/user-not-found';
 import { IPasswordHandler } from '../../common/ports/password-handler.interface';
 
 @Injectable()
