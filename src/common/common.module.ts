@@ -5,8 +5,10 @@ import { CurrentDateGenerator } from './adapters/date-generator/current-date-gen
 import { I_PASSWORD_HANDLER } from './ports/password-handler.interface';
 import { RandomIdGenerator } from './adapters/id-generator/random-id-generator';
 import { BcryptPasswordHandler } from './adapters/password-handler/bcrypt-password-handler';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
+  imports: [ConfigModule],
   providers: [
     {
       provide: I_DATE_GENERATOR,
@@ -22,8 +24,10 @@ import { BcryptPasswordHandler } from './adapters/password-handler/bcrypt-passwo
     },
     {
       provide: I_PASSWORD_HANDLER,
-      useFactory: () => {
-        return new BcryptPasswordHandler();
+      inject: [ConfigService],
+      useFactory: (config) => {
+        const saltRounds = config.get('bcrypt.saltOrRounds');
+        return new BcryptPasswordHandler(parseInt(saltRounds));
       },
     },
   ],
