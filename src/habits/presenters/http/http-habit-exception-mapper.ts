@@ -14,6 +14,7 @@ export class HttpHabitExceptionsMapper {
     if (error instanceof TrackedHabitDateInFutureException) {
       return new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
+
     return new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }
