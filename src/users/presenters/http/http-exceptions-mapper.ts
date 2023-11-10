@@ -32,5 +32,10 @@ export class HttpUserExceptionsMapper {
         message: error.message,
       };
     }
+
+    return {
+      statusCode: 500,
+      message: 'Internal Server Error',
+    };
   }
 }
