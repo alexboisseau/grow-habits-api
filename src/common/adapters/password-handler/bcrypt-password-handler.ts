@@ -2,11 +2,11 @@ import { IPasswordHandler } from '../../ports/password-handler.interface';
 import * as bcrypt from 'bcrypt';
 
 export class BcryptPasswordHandler implements IPasswordHandler {
+  constructor(private readonly saltRounds: number) {}
+
   async hash(password: string): Promise<string> {
-    const saltRounds = 10; // You can adjust the number of salt rounds as needed
     try {
-      const hashedPassword = await bcrypt.hash(password, saltRounds);
-      return hashedPassword;
+      return await bcrypt.hash(password, this.saltRounds);
     } catch (error) {
       throw new Error(`Error hashing password: ${error.message}`);
     }
@@ -14,8 +14,7 @@ export class BcryptPasswordHandler implements IPasswordHandler {
 
   async compare(password: string, hash: string): Promise<boolean> {
     try {
-      const isMatch = await bcrypt.compare(password, hash);
-      return isMatch;
+      return await bcrypt.compare(password, hash);
     } catch (error) {
       throw new Error(`Error comparing password with hash: ${error.message}`);
     }
