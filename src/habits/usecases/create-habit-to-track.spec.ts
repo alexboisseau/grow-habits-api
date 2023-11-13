@@ -42,7 +42,7 @@ describe('Feature : create a habit to track', () => {
       craving: 'Clean my teeth',
       response: 'Brush my teeth during three minutes',
       reward: 'Have a good feeling with fresh breath',
-      userId: userSeeds.alice.props.id,
+      user: userSeeds.alice,
     };
 
     it('should create a new habit and return an id', async () => {

@@ -2,14 +2,15 @@ import { Habit } from '../entities/habit.entity';
 import { IHabitRepository } from '../ports/habit-repository.interface';
 import { IDateGenerator } from '../../common/ports/date-generator.interface';
 import { IIdGenerator } from '../../common/ports/id-generator.interface';
+import { User } from '../../users/entities/user.entity';
 
 type Request = {
-  userId: string;
   name: string;
   cue: string;
   craving: string;
   response: string;
   reward: string;
+  user: User;
 };
 
 type Response = {
@@ -29,8 +30,13 @@ export class CreateHabitToTrack {
 
     const habit = new Habit({
       id,
-      ...request,
+      name: request.name,
+      cue: request.cue,
+      craving: request.craving,
+      response: request.response,
+      reward: request.reward,
       trackedFrom,
+      userId: request.user.props.id,
     });
 
     await this.habitRepository.create(habit);

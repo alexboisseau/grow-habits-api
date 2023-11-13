@@ -25,7 +25,7 @@ export class HttpHabitPresenter {
     try {
       return await this.createHabitToTrack.execute({
         ...body,
-        userId: req.user.props.id,
+        user: req.user,
       });
     } catch (error) {
       throw this.exceptionsMapper.map(error);
