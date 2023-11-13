@@ -1,5 +1,5 @@
 import { Body, Controller, Param, Post, Req, UseGuards } from '@nestjs/common';
-import { CreateAHabitToTrack } from '../../usecases/create-a-habit-to-track';
+import { CreateHabitToTrack } from '../../usecases/create-habit-to-track';
 import { HabitAPI } from '../../contract';
 import { ZodValidationPipe } from '../../../core/pipes/zod-validation.pipe';
 import { CompleteHabit } from '../../usecases/complete-habit';
@@ -10,20 +10,20 @@ import { HttpHabitExceptionsMapper } from './http-habit-exception-mapper';
 @Controller()
 export class HttpHabitPresenter {
   constructor(
-    private readonly createAHabitToTrack: CreateAHabitToTrack,
+    private readonly createHabitToTrack: CreateHabitToTrack,
     private readonly completeHabit: CompleteHabit,
     private readonly exceptionsMapper: HttpHabitExceptionsMapper,
   ) {}
 
   @UseGuards(SessionGuard)
   @Post('/habits')
-  async handleCreateAHabitToTrack(
-    @Body(new ZodValidationPipe(HabitAPI.CreateAHabitToTrack.schema))
-    body: HabitAPI.CreateAHabitToTrack.Request,
+  async handleCreateHabitToTrack(
+    @Body(new ZodValidationPipe(HabitAPI.CreateHabitToTrack.schema))
+    body: HabitAPI.CreateHabitToTrack.Request,
     @Req() req: Request & { user: User },
   ) {
     try {
-      return await this.createAHabitToTrack.execute({
+      return await this.createHabitToTrack.execute({
         ...body,
         userId: req.user.props.id,
       });

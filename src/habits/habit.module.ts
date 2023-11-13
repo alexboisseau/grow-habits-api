@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { CreateAHabitToTrack } from './usecases/create-a-habit-to-track';
+import { CreateHabitToTrack } from './usecases/create-habit-to-track';
 import { I_HABIT_REPOSITORY } from './ports/habit-repository.interface';
 import { I_DATE_GENERATOR } from '../common/ports/date-generator.interface';
 import { I_ID_GENERATOR } from '../common/ports/id-generator.interface';
@@ -36,10 +36,10 @@ import { HttpHabitExceptionsMapper } from './presenters/http/http-habit-exceptio
       },
     },
     {
-      provide: CreateAHabitToTrack,
+      provide: CreateHabitToTrack,
       inject: [I_HABIT_REPOSITORY, I_ID_GENERATOR, I_DATE_GENERATOR],
       useFactory: (habitRepository, idGenerator, dateGenerator) => {
-        return new CreateAHabitToTrack(
+        return new CreateHabitToTrack(
           habitRepository,
           idGenerator,
           dateGenerator,

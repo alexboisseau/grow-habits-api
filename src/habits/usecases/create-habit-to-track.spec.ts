@@ -3,7 +3,7 @@ import { FixedIdGenerator } from '../../common/adapters/id-generator/fixed-id-ge
 import { userSeeds } from '../../users/tests/user-seeds';
 import { InMemoryHabitRepository } from '../adapters/in-memory-habit-repository';
 import { Habit } from '../entities/habit.entity';
-import { CreateAHabitToTrack } from './create-a-habit-to-track';
+import { CreateHabitToTrack } from './create-habit-to-track';
 
 describe('Feature : create a habit to track', () => {
   function expectHabitToEqual(habit: Habit) {
@@ -22,13 +22,13 @@ describe('Feature : create a habit to track', () => {
   let habitRepository: InMemoryHabitRepository;
   let idGenerator: FixedIdGenerator;
   let dateGenerator: FixedDateGenerator;
-  let useCase: CreateAHabitToTrack;
+  let useCase: CreateHabitToTrack;
 
   beforeEach(() => {
     habitRepository = new InMemoryHabitRepository();
     idGenerator = new FixedIdGenerator();
     dateGenerator = new FixedDateGenerator();
-    useCase = new CreateAHabitToTrack(
+    useCase = new CreateHabitToTrack(
       habitRepository,
       idGenerator,
       dateGenerator,
