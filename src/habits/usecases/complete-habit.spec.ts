@@ -127,5 +127,17 @@ describe('Feature : complete a tracked habit', () => {
         "Completion date must be after the habit's start date.",
       );
     });
+
+    it('should fail if user does not own the related habit', async () => {
+      const payload = {
+        habitId: uncompletedTrackedHabit.props.habitId,
+        date: uncompletedTrackedHabit.props.date,
+        user: userSeeds.bob,
+      };
+
+      await expect(() => useCase.execute({ ...payload })).rejects.toThrow(
+        'Unauthorized access',
+      );
+    });
   });
 });

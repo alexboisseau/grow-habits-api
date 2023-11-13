@@ -5,6 +5,7 @@ import { TrackedHabit } from '../entities/tracked-habit.entity';
 import { CompletionDateBeforeHabitsStartDateException } from '../exceptions/completion-date-before-habits-start-date';
 import { HabitNotFoundException } from '../exceptions/habit-not-found';
 import { TrackedHabitDateInFutureException } from '../exceptions/tracked-habit-date-in-future';
+import { UnauthorizedException } from '../exceptions/unauthorized-access';
 import { IHabitRepository } from '../ports/habit-repository.interface';
 import { ITrackedHabitRepository } from '../ports/tracked-habit-repository.interface';
 
@@ -32,6 +33,10 @@ export class CompleteHabit {
       );
 
     if (existingTrackedHabit) {
+      this.validateUserIsHabitOwner(
+        existingTrackedHabit.props.userId,
+        request.user.props.id,
+      );
       await this.completeExistingTrackedHabit(existingTrackedHabit);
     } else {
       await this.createNewTrackedHabit(request);
@@ -53,43 +58,42 @@ export class CompleteHabit {
     date,
     user,
   }: Request): Promise<void> {
-    const newTrackedHabit = this.createTrackedHabit(
-      habitId,
-      date,
-      user.props.id,
-    );
-
     const habit = await this.habitRepository.findById(habitId);
+
+    const newTrackedHabit = new TrackedHabit({
+      date,
+      habitId,
+      id: this.idGenerator.generate(),
+      status: 'COMPLETED',
+      userId: user.props.id,
+    });
 
     this.validateNewTrackedHabit(newTrackedHabit, habit);
 
     await this.trackedHabitRepository.create(newTrackedHabit);
   }
 
-  private createTrackedHabit(
-    habitId: string,
-    date: string,
-    userId: string,
-  ): TrackedHabit {
-    return new TrackedHabit({
-      date,
-      habitId,
-      id: this.idGenerator.generate(),
-      status: 'COMPLETED',
-      userId,
-    });
-  }
-
   private validateNewTrackedHabit(
     newTrackedHabit: TrackedHabit,
     habit: Habit | null,
   ): void {
+    if (habit === null) throw new HabitNotFoundException();
+
+    this.validateUserIsHabitOwner(
+      habit.props.userId,
+      newTrackedHabit.props.userId,
+    );
+
     if (newTrackedHabit.isInTheFuture(this.dateGenerator.now()))
       throw new TrackedHabitDateInFutureException();
 
-    if (habit === null) throw new HabitNotFoundException();
-
     if (newTrackedHabit.isBeforeStartDate(habit.props.trackedFrom))
       throw new CompletionDateBeforeHabitsStartDateException();
+  }
+
+  private validateUserIsHabitOwner(habitUserId: string, userId: string): void {
+    if (habitUserId !== userId) {
+      throw new UnauthorizedException();
+    }
   }
 }
