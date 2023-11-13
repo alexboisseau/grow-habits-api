@@ -7,6 +7,10 @@ import { InMemoryTrackedHabitRepository } from '../adapters/in-memory-tracked-re
 import { TrackedHabit } from '../entities/tracked-habit.entity';
 import { habitSeeds } from '../tests/habitSeeds';
 import { CompleteHabit } from './complete-habit';
+import { UnauthorizedException } from '../exceptions/unauthorized-access';
+import { CompletionDateBeforeHabitsStartDateException } from '../exceptions/completion-date-before-habits-start-date';
+import { TrackedHabitDateInFutureException } from '../exceptions/tracked-habit-date-in-future';
+import { HabitNotFoundException } from '../exceptions/habit-not-found';
 
 describe('Feature : update status to a tracked habit', () => {
   const complitedTrackedHabit = new TrackedHabit({
@@ -153,56 +157,64 @@ describe('Feature : update status to a tracked habit', () => {
   });
 
   describe('Unhappy path', () => {
-    it('should fail if tracked habit related to a non-existing habit', async () => {
-      const payload = {
-        habitId: 'invalid-id',
-        date: '2023-01-02',
-        status: TrackedHabitStatus.COMPLETED,
-        user: userSeeds.alice,
-      };
+    describe('Scenario: tracked habit related to a non-existing habit', () => {
+      it('should fail', async () => {
+        const payload = {
+          habitId: 'invalid-id',
+          date: '2023-01-02',
+          status: TrackedHabitStatus.COMPLETED,
+          user: userSeeds.alice,
+        };
 
-      await expect(() => useCase.execute({ ...payload })).rejects.toThrow(
-        'Habit not found',
-      );
+        await expect(() => useCase.execute({ ...payload })).rejects.toThrow(
+          HabitNotFoundException,
+        );
+      });
     });
 
-    it('should fail if tracked habit is in the future', async () => {
-      const payload = {
-        habitId: uncompletedTrackedHabit.props.habitId,
-        date: '2024-01-02',
-        status: TrackedHabitStatus.COMPLETED,
-        user: userSeeds.alice,
-      };
+    describe('Scenario: tracked habit is in the future', () => {
+      it('should fail', async () => {
+        const payload = {
+          habitId: uncompletedTrackedHabit.props.habitId,
+          date: '2024-01-02',
+          status: TrackedHabitStatus.COMPLETED,
+          user: userSeeds.alice,
+        };
 
-      await expect(() => useCase.execute({ ...payload })).rejects.toThrow(
-        'Tracked habit date cannot be in the future',
-      );
+        await expect(() => useCase.execute({ ...payload })).rejects.toThrow(
+          TrackedHabitDateInFutureException,
+        );
+      });
     });
 
-    it('should fail if tracked habit is before the started habit date', async () => {
-      const payload = {
-        habitId: uncompletedTrackedHabit.props.habitId,
-        date: '2022-12-31',
-        status: TrackedHabitStatus.COMPLETED,
-        user: userSeeds.alice,
-      };
+    describe('Scenario: tracked habit is before the started habit date', () => {
+      it('should fail ', async () => {
+        const payload = {
+          habitId: uncompletedTrackedHabit.props.habitId,
+          date: '2022-12-31',
+          status: TrackedHabitStatus.COMPLETED,
+          user: userSeeds.alice,
+        };
 
-      await expect(() => useCase.execute({ ...payload })).rejects.toThrow(
-        "Completion date must be after the habit's start date.",
-      );
+        await expect(() =>
+          useCase.execute({ ...payload }),
+        ).rejects.toThrowError(CompletionDateBeforeHabitsStartDateException);
+      });
     });
 
-    it('should fail if user does not own the related habit', async () => {
-      const payload = {
-        habitId: uncompletedTrackedHabit.props.habitId,
-        date: uncompletedTrackedHabit.props.date,
-        status: TrackedHabitStatus.COMPLETED,
-        user: userSeeds.bob,
-      };
+    describe('Scenario: user is not the owner of the habit', () => {
+      it('should fail', async () => {
+        const payload = {
+          habitId: uncompletedTrackedHabit.props.habitId,
+          date: uncompletedTrackedHabit.props.date,
+          status: TrackedHabitStatus.COMPLETED,
+          user: userSeeds.bob,
+        };
 
-      await expect(() => useCase.execute({ ...payload })).rejects.toThrow(
-        'Unauthorized access',
-      );
+        await expect(() =>
+          useCase.execute({ ...payload }),
+        ).rejects.toThrowError(UnauthorizedException);
+      });
     });
   });
 });
