@@ -9,14 +9,13 @@ import { TrackedHabitDateInFutureException } from '../exceptions/tracked-habit-d
 import { UnauthorizedException } from '../exceptions/unauthorized-access';
 import { IHabitRepository } from '../ports/habit-repository.interface';
 import { ITrackedHabitRepository } from '../ports/tracked-habit-repository.interface';
+import { User } from '../../users/entities/user.entity';
 
 type Request = {
   habitId: string;
   date: string;
   status: TrackedHabitStatus;
-  user: {
-    props: { id: string };
-  };
+  user: User;
 };
 
 export class CompleteHabit {
