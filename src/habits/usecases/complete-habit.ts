@@ -1,3 +1,4 @@
+import { TrackedHabitStatus } from '@prisma/client';
 import { IDateGenerator } from '../../common/ports/date-generator.interface';
 import { IIdGenerator } from '../../common/ports/id-generator.interface';
 import { Habit } from '../entities/habit.entity';
@@ -12,6 +13,7 @@ import { ITrackedHabitRepository } from '../ports/tracked-habit-repository.inter
 type Request = {
   habitId: string;
   date: string;
+  status: TrackedHabitStatus;
   user: {
     props: { id: string };
   };
@@ -37,17 +39,21 @@ export class CompleteHabit {
         existingTrackedHabit.props.userId,
         request.user.props.id,
       );
-      await this.completeExistingTrackedHabit(existingTrackedHabit);
+      await this.updateExistingTrackedHabitStatus(
+        existingTrackedHabit,
+        request.status,
+      );
     } else {
       await this.createNewTrackedHabit(request);
     }
   }
 
-  private async completeExistingTrackedHabit(
+  private async updateExistingTrackedHabitStatus(
     trackedHabit: TrackedHabit,
+    status: TrackedHabitStatus,
   ): Promise<void> {
     trackedHabit.update({
-      status: 'COMPLETED',
+      status,
     });
 
     await this.trackedHabitRepository.update(trackedHabit);
@@ -57,6 +63,7 @@ export class CompleteHabit {
     habitId,
     date,
     user,
+    status,
   }: Request): Promise<void> {
     const habit = await this.habitRepository.findById(habitId);
 
@@ -64,7 +71,7 @@ export class CompleteHabit {
       date,
       habitId,
       id: this.idGenerator.generate(),
-      status: 'COMPLETED',
+      status,
       userId: user.props.id,
     });
 

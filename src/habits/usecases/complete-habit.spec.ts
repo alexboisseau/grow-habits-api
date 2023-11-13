@@ -1,3 +1,4 @@
+import { TrackedHabitStatus } from '@prisma/client';
 import { FixedDateGenerator } from '../../common/adapters/date-generator/fixed-date-generator';
 import { FixedIdGenerator } from '../../common/adapters/id-generator/fixed-id-generator';
 import { userSeeds } from '../../users/tests/user-seeds';
@@ -7,7 +8,15 @@ import { TrackedHabit } from '../entities/tracked-habit.entity';
 import { habitSeeds } from '../tests/habitSeeds';
 import { CompleteHabit } from './complete-habit';
 
-describe('Feature : complete a tracked habit', () => {
+describe('Feature : update status to a tracked habit', () => {
+  const complitedTrackedHabit = new TrackedHabit({
+    date: '2023-01-02',
+    habitId: habitSeeds.makeMyBed.props.id,
+    id: 'id-1',
+    status: 'COMPLETED',
+    userId: userSeeds.alice.props.id,
+  });
+
   const uncompletedTrackedHabit = new TrackedHabit({
     date: '2023-01-02',
     habitId: habitSeeds.makeMyBed.props.id,
@@ -38,11 +47,12 @@ describe('Feature : complete a tracked habit', () => {
   });
 
   describe('Happy path', () => {
-    describe('Scenario: tracked habit does already exist', () => {
+    describe('Scenario: update status to tracked habit that already exists', () => {
       it('should complete the tracked habit', async () => {
         const payload = {
           habitId: uncompletedTrackedHabit.props.habitId,
           date: uncompletedTrackedHabit.props.date,
+          status: TrackedHabitStatus.COMPLETED,
           user: userSeeds.alice,
         };
 
@@ -54,18 +64,41 @@ describe('Feature : complete a tracked habit', () => {
         )) as TrackedHabit;
 
         expect(trackedHabit.props).toEqual({
-          ...uncompletedTrackedHabit.props,
-          status: 'COMPLETED',
+          ...complitedTrackedHabit.props,
+          status: TrackedHabitStatus.COMPLETED,
+        });
+        expect(trackedHabitRepository.count()).toEqual(1);
+      });
+
+      it('should cancel completion of the tracked habit', async () => {
+        const payload = {
+          habitId: complitedTrackedHabit.props.habitId,
+          date: complitedTrackedHabit.props.date,
+          status: TrackedHabitStatus.TO_COMPLETE,
+          user: userSeeds.alice,
+        };
+
+        await useCase.execute({ ...payload });
+
+        const trackedHabit = (await trackedHabitRepository.findByHabitIdAndDate(
+          payload.habitId,
+          payload.date,
+        )) as TrackedHabit;
+
+        expect(trackedHabit.props).toEqual({
+          ...complitedTrackedHabit.props,
+          status: TrackedHabitStatus.TO_COMPLETE,
         });
         expect(trackedHabitRepository.count()).toEqual(1);
       });
     });
 
-    describe('Scenario: tracked habit does not already exist', () => {
-      it('should create and complete the tracked habit', async () => {
+    describe('Scenario: update status to tracked habit that does not exist', () => {
+      it('should create new tracked habit with COMPLETED status', async () => {
         const payload = {
           habitId: habitSeeds.makeMyBed.props.id,
           date: '2023-01-03',
+          status: TrackedHabitStatus.COMPLETED,
           user: userSeeds.alice,
         };
 
@@ -84,7 +117,35 @@ describe('Feature : complete a tracked habit', () => {
           date: '2023-01-03',
           habitId: payload.habitId,
           id: 'id-1',
-          status: 'COMPLETED',
+          status: TrackedHabitStatus.COMPLETED,
+          userId: userSeeds.alice.props.id,
+        });
+      });
+
+      it('should create new tracked habit with TO_COMPLETE status', async () => {
+        const payload = {
+          habitId: habitSeeds.makeMyBed.props.id,
+          date: '2023-01-03',
+          status: TrackedHabitStatus.TO_COMPLETE,
+          user: userSeeds.alice,
+        };
+
+        await useCase.execute({
+          ...payload,
+        });
+
+        const createdTrackHabit =
+          (await trackedHabitRepository.findByHabitIdAndDate(
+            payload.habitId,
+            payload.date,
+          )) as TrackedHabit;
+
+        expect(createdTrackHabit).not.toBeNull();
+        expect(createdTrackHabit.props).toEqual({
+          date: '2023-01-03',
+          habitId: payload.habitId,
+          id: 'id-1',
+          status: TrackedHabitStatus.TO_COMPLETE,
           userId: userSeeds.alice.props.id,
         });
       });
@@ -96,6 +157,7 @@ describe('Feature : complete a tracked habit', () => {
       const payload = {
         habitId: 'invalid-id',
         date: '2023-01-02',
+        status: TrackedHabitStatus.COMPLETED,
         user: userSeeds.alice,
       };
 
@@ -108,6 +170,7 @@ describe('Feature : complete a tracked habit', () => {
       const payload = {
         habitId: uncompletedTrackedHabit.props.habitId,
         date: '2024-01-02',
+        status: TrackedHabitStatus.COMPLETED,
         user: userSeeds.alice,
       };
 
@@ -120,6 +183,7 @@ describe('Feature : complete a tracked habit', () => {
       const payload = {
         habitId: uncompletedTrackedHabit.props.habitId,
         date: '2022-12-31',
+        status: TrackedHabitStatus.COMPLETED,
         user: userSeeds.alice,
       };
 
@@ -132,6 +196,7 @@ describe('Feature : complete a tracked habit', () => {
       const payload = {
         habitId: uncompletedTrackedHabit.props.habitId,
         date: uncompletedTrackedHabit.props.date,
+        status: TrackedHabitStatus.COMPLETED,
         user: userSeeds.bob,
       };
 
