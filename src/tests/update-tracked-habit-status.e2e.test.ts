@@ -7,8 +7,9 @@ import {
 } from '../habits/ports/tracked-habit-repository.interface';
 import { TrackedHabit } from '../habits/entities/tracked-habit.entity';
 import { e2eUsers } from './seeds/user-seeds';
+import { TrackedHabitStatus } from '@prisma/client';
 
-describe('Feature: complete habit', () => {
+describe('Feature: update tracked habit status', () => {
   async function login(agent: request.SuperAgentTest) {
     await agent.post('/login').send({
       email: e2eUsers.alice.entity.props.email,
@@ -32,13 +33,16 @@ describe('Feature: complete habit', () => {
 
   const payload = {
     date: '2023-01-03',
+    status: TrackedHabitStatus.COMPLETED,
   };
 
   describe('Happy path', () => {
     it('should complete the tracked habit', async () => {
       await login(agent);
 
-      const result = await agent.post('/habits/id-1/complete').send(payload);
+      const result = await agent
+        .post('/habits/id-1/update-status')
+        .send(payload);
 
       expect(result.status).toEqual(201);
 
@@ -53,11 +57,34 @@ describe('Feature: complete habit', () => {
 
       expect(completedHabit.props.status).toEqual('COMPLETED');
     });
+
+    it('should cancel completion of the tracked habit', async () => {
+      await login(agent);
+
+      const result = await agent
+        .post('/habits/id-1/update-status')
+        .send({ ...payload, status: TrackedHabitStatus.TO_COMPLETE });
+
+      expect(result.status).toEqual(201);
+
+      const trackedHabitRepository = app.get<ITrackedHabitRepository>(
+        I_TRACKED_HABIT_REPOSITORY,
+      );
+
+      const completedHabit = (await trackedHabitRepository.findByHabitIdAndDate(
+        'id-1',
+        payload.date,
+      )) as TrackedHabit;
+
+      expect(completedHabit.props.status).toEqual('TO_COMPLETE');
+    });
   });
 
   describe('Unhappy path', () => {
     it('should fail if user is not connected', async () => {
-      const result = await agent.post('/habits/id-1/complete').send(payload);
+      const result = await agent
+        .post('/habits/id-1/update-status')
+        .send(payload);
 
       expect(result.status).toEqual(403);
     });
