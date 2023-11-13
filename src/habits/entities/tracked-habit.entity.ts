@@ -1,4 +1,5 @@
-export type TrackedHabitStatus = 'TO_COMPLETE' | 'COMPLETED';
+export const TrackedHabitStatusArray = ['TO_COMPLETE', 'COMPLETED'] as const;
+export type TrackedHabitStatus = (typeof TrackedHabitStatusArray)[number];
 
 export type TrackedHabitProps = {
   id: string;

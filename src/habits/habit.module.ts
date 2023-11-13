@@ -5,7 +5,7 @@ import { I_DATE_GENERATOR } from '../common/ports/date-generator.interface';
 import { I_ID_GENERATOR } from '../common/ports/id-generator.interface';
 import { HttpHabitPresenter } from './presenters/http/http-habit-presenter';
 import { CommonModule } from '../common/common.module';
-import { CompleteHabit } from './usecases/complete-habit';
+import { UpdateTrackedHabitStatus } from './usecases/update-tracked-habit-status';
 import { I_TRACKED_HABIT_REPOSITORY } from './ports/tracked-habit-repository.interface';
 import { PrismaModule } from '../prisma/prisma.module';
 import { PRISMA_SERVICE } from '../prisma/prisma.service';
@@ -47,7 +47,7 @@ import { HttpHabitExceptionsMapper } from './presenters/http/http-habit-exceptio
       },
     },
     {
-      provide: CompleteHabit,
+      provide: UpdateTrackedHabitStatus,
       inject: [
         I_TRACKED_HABIT_REPOSITORY,
         I_HABIT_REPOSITORY,
@@ -60,7 +60,7 @@ import { HttpHabitExceptionsMapper } from './presenters/http/http-habit-exceptio
         idGenerator,
         dateGenerator,
       ) => {
-        return new CompleteHabit(
+        return new UpdateTrackedHabitStatus(
           trackedHabitRepository,
           habitRepository,
           idGenerator,

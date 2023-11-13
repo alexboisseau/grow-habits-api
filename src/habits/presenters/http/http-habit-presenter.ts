@@ -2,7 +2,7 @@ import { Body, Controller, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { CreateHabitToTrack } from '../../usecases/create-habit-to-track';
 import { HabitAPI } from '../../contract';
 import { ZodValidationPipe } from '../../../core/pipes/zod-validation.pipe';
-import { CompleteHabit } from '../../usecases/complete-habit';
+import { UpdateTrackedHabitStatus } from '../../usecases/update-tracked-habit-status';
 import { SessionGuard } from '../../../auth/session/session.guard';
 import { User } from '../../../users/entities/user.entity';
 import { HttpHabitExceptionsMapper } from './http-habit-exception-mapper';
@@ -11,7 +11,7 @@ import { HttpHabitExceptionsMapper } from './http-habit-exception-mapper';
 export class HttpHabitPresenter {
   constructor(
     private readonly createHabitToTrack: CreateHabitToTrack,
-    private readonly completeHabit: CompleteHabit,
+    private readonly updateTrackedHabitStatus: UpdateTrackedHabitStatus,
     private readonly exceptionsMapper: HttpHabitExceptionsMapper,
   ) {}
 
@@ -33,15 +33,15 @@ export class HttpHabitPresenter {
   }
 
   @UseGuards(SessionGuard)
-  @Post('/habits/:habitId/complete')
-  async handleCompleteHabit(
-    @Body(new ZodValidationPipe(HabitAPI.CompleteHabit.schema))
-    body: HabitAPI.CompleteHabit.Request,
+  @Post('/habits/:habitId/update-status')
+  async handleUpdateTrackedHabitStatus(
+    @Body(new ZodValidationPipe(HabitAPI.UpdateTrackedHabitStatus.schema))
+    body: HabitAPI.UpdateTrackedHabitStatus.Request,
     @Param('habitId') habitId: string,
     @Req() req: Request & { user: User },
   ) {
     try {
-      return await this.completeHabit.execute({
+      return await this.updateTrackedHabitStatus.execute({
         ...body,
         habitId,
         user: req.user,

@@ -18,7 +18,7 @@ type Request = {
   user: User;
 };
 
-export class CompleteHabit {
+export class UpdateTrackedHabitStatus {
   constructor(
     private readonly trackedHabitRepository: ITrackedHabitRepository,
     private readonly habitRepository: IHabitRepository,

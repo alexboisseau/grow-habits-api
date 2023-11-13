@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { TrackedHabitStatusArray } from './entities/tracked-habit.entity';
 
 export namespace HabitAPI {
   export namespace CreateHabitToTrack {
@@ -16,9 +17,10 @@ export namespace HabitAPI {
     };
   }
 
-  export namespace CompleteHabit {
+  export namespace UpdateTrackedHabitStatus {
     export const schema = z.object({
       date: z.string().refine((value) => !isNaN(Date.parse(value))),
+      status: z.enum(TrackedHabitStatusArray),
     });
 
     export type Request = z.infer<typeof schema>;

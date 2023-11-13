@@ -6,18 +6,18 @@ import { InMemoryHabitRepository } from '../adapters/in-memory-habit-repository'
 import { InMemoryTrackedHabitRepository } from '../adapters/in-memory-tracked-repository';
 import { TrackedHabit } from '../entities/tracked-habit.entity';
 import { habitSeeds } from '../tests/habitSeeds';
-import { CompleteHabit } from './complete-habit';
+import { UpdateTrackedHabitStatus } from './update-tracked-habit-status';
 import { UnauthorizedException } from '../exceptions/unauthorized-access';
 import { CompletionDateBeforeHabitsStartDateException } from '../exceptions/completion-date-before-habits-start-date';
 import { TrackedHabitDateInFutureException } from '../exceptions/tracked-habit-date-in-future';
 import { HabitNotFoundException } from '../exceptions/habit-not-found';
 
-describe('Feature : update status to a tracked habit', () => {
+describe('Feature : update tracked habit status', () => {
   const complitedTrackedHabit = new TrackedHabit({
     date: '2023-01-02',
     habitId: habitSeeds.makeMyBed.props.id,
     id: 'id-1',
-    status: 'COMPLETED',
+    status: TrackedHabitStatus.COMPLETED,
     userId: userSeeds.alice.props.id,
   });
 
@@ -25,7 +25,7 @@ describe('Feature : update status to a tracked habit', () => {
     date: '2023-01-02',
     habitId: habitSeeds.makeMyBed.props.id,
     id: 'id-1',
-    status: 'TO_COMPLETE',
+    status: TrackedHabitStatus.TO_COMPLETE,
     userId: userSeeds.alice.props.id,
   });
 
@@ -33,7 +33,7 @@ describe('Feature : update status to a tracked habit', () => {
   let habitRepository: InMemoryHabitRepository;
   let idGenerator: FixedIdGenerator;
   let dateGenerator: FixedDateGenerator;
-  let useCase: CompleteHabit;
+  let useCase: UpdateTrackedHabitStatus;
 
   beforeEach(() => {
     trackedHabitRepository = new InMemoryTrackedHabitRepository([
@@ -42,7 +42,7 @@ describe('Feature : update status to a tracked habit', () => {
     habitRepository = new InMemoryHabitRepository([habitSeeds.makeMyBed]);
     idGenerator = new FixedIdGenerator();
     dateGenerator = new FixedDateGenerator();
-    useCase = new CompleteHabit(
+    useCase = new UpdateTrackedHabitStatus(
       trackedHabitRepository,
       habitRepository,
       idGenerator,
