@@ -3,6 +3,7 @@ import { IHabitRepository } from '../ports/habit-repository.interface';
 import { IDateGenerator } from '../../common/ports/date-generator.interface';
 import { IIdGenerator } from '../../common/ports/id-generator.interface';
 import { User } from '../../users/entities/user.entity';
+import { UseCase } from '../../shared/usecase';
 
 type Request = {
   name: string;
@@ -17,7 +18,7 @@ type Response = {
   id: string;
 };
 
-export class CreateHabitToTrack {
+export class CreateHabitToTrack implements UseCase<Request, Response> {
   constructor(
     private readonly habitRepository: IHabitRepository,
     private readonly idGenerator: IIdGenerator,

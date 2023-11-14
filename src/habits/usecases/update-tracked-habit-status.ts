@@ -10,6 +10,7 @@ import { UnauthorizedException } from '../exceptions/unauthorized-access';
 import { IHabitRepository } from '../ports/habit-repository.interface';
 import { ITrackedHabitRepository } from '../ports/tracked-habit-repository.interface';
 import { User } from '../../users/entities/user.entity';
+import { UseCase } from '../../shared/usecase';
 
 type Request = {
   habitId: string;
@@ -18,7 +19,9 @@ type Request = {
   user: User;
 };
 
-export class UpdateTrackedHabitStatus {
+type Response = void;
+
+export class UpdateTrackedHabitStatus implements UseCase<Request, Response> {
   constructor(
     private readonly trackedHabitRepository: ITrackedHabitRepository,
     private readonly habitRepository: IHabitRepository,

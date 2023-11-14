@@ -1,5 +1,6 @@
 import { IIdGenerator } from '../../common/ports/id-generator.interface';
 import { IPasswordHandler } from '../../common/ports/password-handler.interface';
+import { UseCase } from '../../shared/usecase';
 import { User } from '../entities/user.entity';
 import { ConfirmPasswordException } from '../exceptions/confirm-password';
 import { EmailAlreadyUsedException } from '../exceptions/email-already-used';
@@ -17,7 +18,7 @@ type Response = {
   id: string;
 };
 
-export class Register {
+export class Register implements UseCase<Request, Response> {
   constructor(
     private readonly userRepository: IUserRepository,
     private readonly idGenerator: IIdGenerator,
