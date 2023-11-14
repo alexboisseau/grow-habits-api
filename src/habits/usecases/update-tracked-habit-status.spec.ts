@@ -5,7 +5,7 @@ import { userSeeds } from '../../users/tests/user-seeds';
 import { InMemoryHabitRepository } from '../adapters/in-memory-habit-repository';
 import { InMemoryTrackedHabitRepository } from '../adapters/in-memory-tracked-repository';
 import { TrackedHabit } from '../entities/tracked-habit.entity';
-import { habitSeeds } from '../tests/habitSeeds';
+import { habitSeeds } from '../tests/habit-seeds';
 import { UpdateTrackedHabitStatus } from './update-tracked-habit-status';
 import { UnauthorizedException } from '../exceptions/unauthorized-access';
 import { CompletionDateBeforeHabitsStartDateException } from '../exceptions/completion-date-before-habits-start-date';
