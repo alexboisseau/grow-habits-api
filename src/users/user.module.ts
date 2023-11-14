@@ -3,8 +3,6 @@ import { Register } from './usecases/register';
 import { I_USER_REPOSITORY } from './ports/user-repository.interface';
 import { I_ID_GENERATOR } from '../common/ports/id-generator.interface';
 import { CommonModule } from '../common/common.module';
-import { InMemorySessionManager } from './adapters/in-memory-session-manager';
-import { I_SESSION_MANAGER } from './ports/session-manager.interface';
 import { I_PASSWORD_HANDLER } from '../common/ports/password-handler.interface';
 import { PrismaUserRepository } from './adapters/prisma/prisma-user-repository';
 import { PrismaUserMapper } from './adapters/prisma/prisma-user-mapper';
@@ -23,12 +21,6 @@ import { HttpUserPresenter } from './presenters/http/http-user-presenter';
       inject: [PRISMA_SERVICE, PrismaUserMapper],
       useFactory: (prisma, mapper) => {
         return new PrismaUserRepository(prisma, mapper);
-      },
-    },
-    {
-      provide: I_SESSION_MANAGER,
-      useFactory: () => {
-        return new InMemorySessionManager();
       },
     },
     {
