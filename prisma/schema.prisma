@@ -12,19 +12,19 @@ datasource db {
 
 model User {
   id           String         @unique @default(uuid())
-  email        String         @unique
-  password     String
+  email        String         @unique @db.VarChar(255)
+  password     String         @db.VarChar(255)
   habits       Habit[]
   TrackedHabit TrackedHabit[]
 }
 
 model Habit {
   id           String         @unique @default(uuid())
-  name         String
-  cue          String
-  craving      String
-  response     String
-  reward       String
+  name         String         @db.VarChar(50)
+  cue          String         @db.VarChar(255)
+  craving      String         @db.VarChar(255)
+  response     String         @db.VarChar(255)
+  reward       String         @db.VarChar(255)
   trackedFrom  DateTime
   user         User           @relation(fields: [userId], references: [id])
   userId       String
