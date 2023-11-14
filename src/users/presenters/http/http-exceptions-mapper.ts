@@ -22,6 +22,9 @@ export class HttpUserExceptionsMapper {
       return new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
 
-    return new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    return new HttpException(
+      'Internal server error',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
   }
 }
