@@ -3,6 +3,10 @@ import { FakePasswordHandler } from '../../common/adapters/password-handler/fake
 import { IIdGenerator } from '../../common/ports/id-generator.interface';
 import { InMemoryUserRepository } from '../adapters/in-memory-user-repository';
 import { User } from '../entities/user.entity';
+import { ConfirmPasswordException } from '../exceptions/confirm-password';
+import { EmailAlreadyUsedException } from '../exceptions/email-already-used';
+import { EmailFormatException } from '../exceptions/email-format';
+import { PasswordLengthException } from '../exceptions/password-length';
 import { IUserRepository } from '../ports/user-repository.interface';
 import { userSeeds } from '../tests/user-seeds';
 import { Register } from './register';
@@ -79,8 +83,8 @@ describe('Feature: Register', () => {
         confirmPassword: '87654321',
       };
 
-      await expect(() => usecase.execute({ ...payload })).rejects.toThrow(
-        "Password and confirm password fields don't match",
+      await expect(() => usecase.execute({ ...payload })).rejects.toThrowError(
+        ConfirmPasswordException,
       );
     });
 
@@ -91,8 +95,8 @@ describe('Feature: Register', () => {
         confirmPassword: '123456',
       };
 
-      await expect(() => usecase.execute({ ...payload })).rejects.toThrow(
-        'Password length must be greater than or equal to 8',
+      await expect(() => usecase.execute({ ...payload })).rejects.toThrowError(
+        PasswordLengthException,
       );
     });
 
@@ -103,8 +107,8 @@ describe('Feature: Register', () => {
         confirmPassword: '12345678',
       };
 
-      await expect(() => usecase.execute({ ...payload })).rejects.toThrow(
-        'Email already used',
+      await expect(() => usecase.execute({ ...payload })).rejects.toThrowError(
+        EmailAlreadyUsedException,
       );
     });
 
@@ -115,8 +119,8 @@ describe('Feature: Register', () => {
         confirmPassword: '12345678',
       };
 
-      await expect(() => usecase.execute({ ...payload })).rejects.toThrow(
-        'Invalid email format',
+      await expect(() => usecase.execute({ ...payload })).rejects.toThrowError(
+        EmailFormatException,
       );
     });
   });
