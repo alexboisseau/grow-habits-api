@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { TrackedHabitStatusArray } from './entities/tracked-habit.entity';
+import { TRACKED_HABIT_STATUS } from './entities/tracked-habit.entity';
 import {
   HABIT_CRAVING_MAX_LENGTH,
   HABIT_CRAVING_MIN_LENGTH,
@@ -41,7 +41,7 @@ export namespace HabitAPI {
   export namespace UpdateTrackedHabitStatus {
     export const schema = z.object({
       date: z.string().refine((value) => !isNaN(Date.parse(value))),
-      status: z.enum(TrackedHabitStatusArray),
+      status: z.enum(TRACKED_HABIT_STATUS),
     });
 
     export type Request = z.infer<typeof schema>;
