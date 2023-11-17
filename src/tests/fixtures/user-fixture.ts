@@ -1,8 +1,9 @@
-import { User } from '../../users/entities/user.entity';
+import { User } from '../../domain/entities/user.entity';
 import {
   IUserRepository,
   I_USER_REPOSITORY,
-} from '../../users/ports/user-repository.interface';
+} from '../../domain/ports/user-repository.port';
+
 import { TestApp } from '../utils/test-app';
 import { IFixture } from './fixture.interface';
 

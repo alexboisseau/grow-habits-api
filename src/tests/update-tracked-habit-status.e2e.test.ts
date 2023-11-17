@@ -1,13 +1,13 @@
 import * as request from 'supertest';
 import { TestApp } from './utils/test-app';
 import { e2eHabits } from './seeds/habit-seeds';
+import { e2eUsers } from './seeds/user-seeds';
+import { TrackedHabitStatus } from '@prisma/client';
 import {
   ITrackedHabitRepository,
   I_TRACKED_HABIT_REPOSITORY,
-} from '../habits/ports/tracked-habit-repository.interface';
-import { TrackedHabit } from '../habits/entities/tracked-habit.entity';
-import { e2eUsers } from './seeds/user-seeds';
-import { TrackedHabitStatus } from '@prisma/client';
+} from '../domain/ports/tracked-habit-repository.port';
+import { TrackedHabit } from '../domain/entities/tracked-habit.entity';
 
 describe('Feature: update tracked habit status', () => {
   async function login(agent: request.SuperAgentTest) {

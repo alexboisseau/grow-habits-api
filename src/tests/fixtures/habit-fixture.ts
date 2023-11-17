@@ -1,8 +1,8 @@
-import { Habit } from '../../habits/entities/habit.entity';
+import { Habit } from '../../domain/entities/habit.entity';
 import {
   IHabitRepository,
   I_HABIT_REPOSITORY,
-} from '../../habits/ports/habit-repository.interface';
+} from '../../domain/ports/habit-repository.port';
 import { TestApp } from '../utils/test-app';
 import { IFixture } from './fixture.interface';
 

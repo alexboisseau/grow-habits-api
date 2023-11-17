@@ -4,6 +4,7 @@
  */
 
 export default {
+  rootDir: 'src',
   collectCoverage: false,
   preset: 'ts-jest',
   testEnvironment: 'node',

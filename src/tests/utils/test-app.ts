@@ -1,11 +1,15 @@
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { AppModule } from '../../core/app.module';
+
+import { AppModule } from '../../infrastructure/modules/app.module';
+import {
+  PRISMA_SERVICE,
+  PrismaService,
+} from '../../infrastructure/persistence/prisma/prisma.service';
 import { IFixture } from '../fixtures/fixture.interface';
 
 import * as session from 'express-session';
 import * as passport from 'passport';
-import { PRISMA_SERVICE, PrismaService } from '../../prisma/prisma.service';
 
 export class TestApp {
   private app: INestApplication;

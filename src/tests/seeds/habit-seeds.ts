@@ -1,4 +1,4 @@
-import { habitSeeds } from '../../habits/tests/habit-seeds';
+import { habitSeeds } from '../../application/usecases/tests/seeds/habit.seeds';
 import { HabitFixture } from '../fixtures/habit-fixture';
 
 export const e2eHabits = {

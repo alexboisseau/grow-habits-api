@@ -1,6 +1,6 @@
 import { hashSync } from 'bcrypt';
-import { User } from '../../users/entities/user.entity';
 import { UserFixture } from '../fixtures/user-fixture';
+import { User } from '../../domain/entities/user.entity';
 
 export const e2eUsers = {
   alice: new UserFixture(
