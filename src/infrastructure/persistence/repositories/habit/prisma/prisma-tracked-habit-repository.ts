@@ -1,3 +1,4 @@
+import { Habit } from '../../../../../domain/entities/habit.entity';
 import { TrackedHabit } from '../../../../../domain/entities/tracked-habit.entity';
 import { ITrackedHabitRepository } from '../../../../../domain/ports/tracked-habit-repository.port';
 import { PrismaService } from '../../../prisma/prisma.service';
@@ -32,6 +33,24 @@ export class PrismaTrackedHabitRepository implements ITrackedHabitRepository {
 
     if (!trackedHabit) return null;
     return this.mapper.toCore(trackedHabit);
+  }
+
+  async findAllByHabitsAndDate(
+    habits: Habit[],
+    date: string,
+  ): Promise<TrackedHabit[]> {
+    const trackedHabits = await this.prisma.trackedHabit.findMany({
+      where: {
+        date,
+        habitId: {
+          in: habits.map((habit) => habit.props.id),
+        },
+      },
+    });
+
+    return trackedHabits.map((trackedHabit) =>
+      this.mapper.toCore(trackedHabit),
+    );
   }
 
   async update(trackedHabit: TrackedHabit): Promise<void> {

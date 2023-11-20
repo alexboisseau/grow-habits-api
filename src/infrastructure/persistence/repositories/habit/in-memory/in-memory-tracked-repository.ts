@@ -1,3 +1,4 @@
+import { Habit } from '../../../../../domain/entities/habit.entity';
 import { TrackedHabit } from '../../../../../domain/entities/tracked-habit.entity';
 import { ITrackedHabitRepository } from '../../../../../domain/ports/tracked-habit-repository.port';
 
@@ -21,6 +22,14 @@ export class InMemoryTrackedHabitRepository implements ITrackedHabitRepository {
     if (trackedHabitIndex < 0) return null;
 
     return new TrackedHabit({ ...this.database[trackedHabitIndex].props });
+  }
+
+  async findAllByHabitsAndDate(habits: Habit[], date: string) {
+    return this.database.filter(
+      (trackedHabit) =>
+        habits.some((habit) => habit.props.id === trackedHabit.props.habitId) &&
+        trackedHabit.props.date === date,
+    );
   }
 
   async update(trackedHabit: TrackedHabit) {

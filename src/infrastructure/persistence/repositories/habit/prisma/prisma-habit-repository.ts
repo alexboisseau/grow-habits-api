@@ -27,4 +27,14 @@ export class PrismaHabitRepository implements IHabitRepository {
     if (!habit) return null;
     return this.mapper.toCore(habit);
   }
+
+  async findAllByUserId(userId: string): Promise<Habit[]> {
+    const habits = await this.prisma.habit.findMany({
+      where: {
+        userId,
+      },
+    });
+
+    return habits.map((habit) => this.mapper.toCore(habit));
+  }
 }
