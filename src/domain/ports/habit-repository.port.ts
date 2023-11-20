@@ -4,4 +4,5 @@ export const I_HABIT_REPOSITORY = 'I_HABIT_REPOSITORY';
 export interface IHabitRepository {
   create(habit: Habit): Promise<void>;
   findById(habitId: string): Promise<Habit | null>;
+  findAllByUserId(userId: string): Promise<Habit[]>;
 }
