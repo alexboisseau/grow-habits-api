@@ -39,5 +39,7 @@ lerna-debug.log*
 # stryker reports
 /reports
 
-# Environment
+# Environment files
 .env
+.env.tests
+.env.development
