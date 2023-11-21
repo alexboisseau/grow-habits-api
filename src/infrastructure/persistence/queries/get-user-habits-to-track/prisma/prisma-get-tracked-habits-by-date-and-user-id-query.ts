@@ -1,5 +1,5 @@
 import { TrackedHabit } from '../../../../../domain/entities/tracked-habit.entity';
-import { IGetUserHabitsToTrackQuery } from '../../../../../domain/ports/get-user-habits-to-track-query.port';
+import { IGetTrackedHabitsByDateAndUserIdQuery } from '../../../../../domain/ports/get-tracked-habits-by-date-and-user-id.port';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { PrismaTrackedHabitMapper } from '../../../repositories/habit/prisma/prisma-tracked-habit.mapper';
 
@@ -8,7 +8,9 @@ type Request = {
   userId: string;
 };
 
-export class PrismaGetUserHabitsToTrack implements IGetUserHabitsToTrackQuery {
+export class PrismaGetTrackedHabitsByDateAndUserIdQuery
+  implements IGetTrackedHabitsByDateAndUserIdQuery
+{
   constructor(
     private readonly prisma: PrismaService,
     private readonly trackedHabitMapper: PrismaTrackedHabitMapper,

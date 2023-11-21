@@ -7,9 +7,9 @@ import { userSeeds } from '../../../../../application/usecases/tests/seeds/user.
 import { formatDateToYYYYMMDD } from '../../../../../utils/format-date-to-YYYY-MM-DD';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { PrismaTrackedHabitMapper } from '../../../repositories/habit/prisma/prisma-tracked-habit.mapper';
-import { PrismaGetUserHabitsToTrack } from './prisma-get-user-habits-to-track-query';
+import { PrismaGetTrackedHabitsByDateAndUserIdQuery } from './prisma-get-tracked-habits-by-date-and-user-id-query';
 
-describe('Query : Get user habits to track', () => {
+describe('Query : Get tracked habits by date and user id', () => {
   async function clearDatabase() {
     await prismaService.trackedHabit.deleteMany({});
     await prismaService.habit.deleteMany({});
@@ -32,11 +32,14 @@ describe('Query : Get user habits to track', () => {
 
   const trackedHabitMapper = new PrismaTrackedHabitMapper();
   let prismaService: PrismaService;
-  let query: PrismaGetUserHabitsToTrack;
+  let query: PrismaGetTrackedHabitsByDateAndUserIdQuery;
 
   beforeAll(async () => {
     prismaService = new PrismaService();
-    query = new PrismaGetUserHabitsToTrack(prismaService, trackedHabitMapper);
+    query = new PrismaGetTrackedHabitsByDateAndUserIdQuery(
+      prismaService,
+      trackedHabitMapper,
+    );
 
     await initializeDatabase();
   });
