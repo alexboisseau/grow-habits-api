@@ -1,6 +1,8 @@
 import { habitSeeds } from '../../../../../application/usecases/tests/seeds/habit.seeds';
 import { trackedHabitSeeds } from '../../../../../application/usecases/tests/seeds/tracked-habit.seeds';
 import { userSeeds } from '../../../../../application/usecases/tests/seeds/user.seeds';
+import { HabitProps } from '../../../../../domain/entities/habit.entity';
+import { TrackedHabitProps } from '../../../../../domain/entities/tracked-habit.entity';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { PrismaGetTrackedHabitsGridQuery } from './prisma-get-tracked-habits-grid-query';
 
@@ -17,13 +19,31 @@ describe('Query : Get tracked habits by date and user id', () => {
     });
   }
 
-  let prismaService: PrismaService;
-  let query: PrismaGetTrackedHabitsGridQuery;
+  async function createHabits(habitsProps: HabitProps[]) {
+    await Promise.all(
+      habitsProps.map(async (props) => {
+        return await prismaService.habit.create({
+          data: props,
+        });
+      }),
+    );
+  }
+
+  async function createTrackedHabits(trackedHabitsProps: TrackedHabitProps[]) {
+    await Promise.all(
+      trackedHabitsProps.map(async (props) => {
+        return await prismaService.trackedHabit.create({
+          data: props,
+        });
+      }),
+    );
+  }
+
+  const prismaService: PrismaService = new PrismaService();
+  const query: PrismaGetTrackedHabitsGridQuery =
+    new PrismaGetTrackedHabitsGridQuery(prismaService);
 
   beforeAll(async () => {
-    prismaService = new PrismaService();
-    query = new PrismaGetTrackedHabitsGridQuery(prismaService);
-
     await initializeDatabase();
   });
 
@@ -42,15 +62,15 @@ describe('Query : Get tracked habits by date and user id', () => {
 
       expect(response).toHaveLength(365);
       expect(
-        response.filter((item) => {
+        response.every((item) => {
           return (
             item.date != null &&
             item.completedTrackedHabitsCount != null &&
             item.uncompletedTrackedHabitsCount != null &&
             item.habitsCount != null
           );
-        }).length,
-      ).toEqual(response.length);
+        }),
+      ).toEqual(true);
     });
   });
 
@@ -78,52 +98,40 @@ describe('Query : Get tracked habits by date and user id', () => {
     });
   });
 
-  describe('habitsCount property : 5 habits, two tracked from February, one from March 2023, two from May', () => {
+  describe('habitsCount property : 5 habits, two tracked from February, one from March 2023, one from May and one from September', () => {
     const payload = {
       userId: userSeeds.alice.props.id,
       year: 2023,
     };
 
     beforeEach(async () => {
-      await prismaService.habit.create({
-        data: {
+      await createHabits([
+        {
           ...habitSeeds.breakfast.props,
           id: 'february-1',
           trackedFrom: new Date('2023-02-01'),
         },
-      });
-
-      await prismaService.habit.create({
-        data: {
+        {
           ...habitSeeds.breakfast.props,
           id: 'february-2',
           trackedFrom: new Date('2023-02-01'),
         },
-      });
-
-      await prismaService.habit.create({
-        data: {
+        {
           ...habitSeeds.breakfast.props,
           id: 'march-1',
           trackedFrom: new Date('2023-03-01'),
         },
-      });
-
-      await prismaService.habit.create({
-        data: {
+        {
           ...habitSeeds.breakfast.props,
           id: 'may-1',
           trackedFrom: new Date('2023-05-01'),
         },
-      });
-
-      await prismaService.habit.create({
-        data: {
+        {
           ...habitSeeds.breakfast.props,
           id: 'may-2',
-          trackedFrom: new Date('2023-05-01'),
+          trackedFrom: new Date('2023-09-01'),
         },
-      });
+      ]);
     });
 
     afterEach(async () => {
@@ -153,22 +161,22 @@ describe('Query : Get tracked habits by date and user id', () => {
         month: 3,
       },
       {
-        habitsCount: 5,
+        habitsCount: 4,
         monthName: 'May',
         month: 4,
       },
       {
-        habitsCount: 5,
+        habitsCount: 4,
         monthName: 'June',
         month: 5,
       },
       {
-        habitsCount: 5,
+        habitsCount: 4,
         monthName: 'July',
         month: 6,
       },
       {
-        habitsCount: 5,
+        habitsCount: 4,
         monthName: 'August',
         month: 7,
       },
@@ -202,11 +210,11 @@ describe('Query : Get tracked habits by date and user id', () => {
           return item.date.getMonth() === month;
         });
 
-        expect(
-          items.filter((item) => {
-            return item.habitsCount === habitsCount;
-          }),
-        ).toHaveLength(items.length);
+        const result = items.every((item) => {
+          return item.habitsCount === habitsCount;
+        });
+
+        expect(result).toEqual(true);
       });
     });
   });
@@ -218,53 +226,41 @@ describe('Query : Get tracked habits by date and user id', () => {
     };
 
     beforeEach(async () => {
-      await prismaService.habit.create({
-        data: {
+      await createHabits([
+        {
           ...habitSeeds.breakfast.props,
           trackedFrom: new Date('2023-02-01'),
         },
-      });
-
-      await prismaService.habit.create({
-        data: {
-          ...habitSeeds.makeMyBed.props,
+        {
+          ...habitSeeds.breakfast.props,
           trackedFrom: new Date('2023-08-01'),
         },
-      });
+      ]);
 
-      await prismaService.trackedHabit.create({
-        data: {
+      await createTrackedHabits([
+        {
           ...trackedHabitSeeds.breakfast.props,
           status: 'COMPLETED',
           date: '2023-02-10',
         },
-      });
-
-      await prismaService.trackedHabit.create({
-        data: {
+        {
           ...trackedHabitSeeds.makeMyBed.props,
           status: 'COMPLETED',
           date: '2023-09-10',
         },
-      });
-
-      await prismaService.trackedHabit.create({
-        data: {
+        {
           ...trackedHabitSeeds.breakfast.props,
           id: 'breakfast-2',
           status: 'COMPLETED',
           date: '2023-10-10',
         },
-      });
-
-      await prismaService.trackedHabit.create({
-        data: {
+        {
           ...trackedHabitSeeds.makeMyBed.props,
           id: 'make-my-bed-2',
           status: 'COMPLETED',
           date: '2023-10-10',
         },
-      });
+      ]);
     });
 
     afterEach(async () => {
