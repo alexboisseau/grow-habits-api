@@ -1,15 +1,15 @@
 export const I_GET_TRACKED_HABIT_GRID_QUERY = 'I_GET_TRACKED_HABIT_GRID_QUERY';
 
 export type IGetTrackedHabitsGridQueryRequest = {
-  date: string;
+  year: number;
   userId: string;
 };
 
 export type IGetTrackedHabitsGridQueryResponse = Array<{
   date: Date;
-  trackedHabitsCount: number;
   completedTrackedHabitsCount: number;
   uncompletedTrackedHabitsCount: number;
+  habitsCount: number;
 }>;
 
 export interface IGetTrackedHabitsGridQuery {
