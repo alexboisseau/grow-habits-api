@@ -24,19 +24,18 @@ export class TrackedHabitController {
   ) {}
 
   @UseGuards(SessionGuard)
-  @Get('/tracked-habits')
+  @Get('tracked-habits')
   async handleGetTrackedHabitsByDateAndUserId(
     @Query(
-      'date',
       new ZodValidationPipe(
-        TrackedHabitAPI.GetTrackedHabitsByDateAndUserId.dateQuery,
+        TrackedHabitAPI.GetTrackedHabitsByDateAndUserId.querySchema,
       ),
     )
-    date: string,
+    query: TrackedHabitAPI.GetTrackedHabitsByDateAndUserId.Query,
     @Req() req: AuthenticatedRequest,
   ): Promise<TrackedHabitAPI.GetTrackedHabitsByDateAndUserId.Response> {
     const trackedHabits = await this.getTrackedHabitsByDateAndUserId.execute({
-      date,
+      ...query,
       userId: req.user.props.id,
     });
 
@@ -47,17 +46,14 @@ export class TrackedHabitController {
   @Get('tracked-habits-grid')
   async handleGetTrackedHabitsGrid(
     @Query(
-      'year',
-      new ZodValidationPipe(
-        TrackedHabitAPI.GetTrackedHabitsGrid.yearQueryParam,
-      ),
+      new ZodValidationPipe(TrackedHabitAPI.GetTrackedHabitsGrid.querySchema),
     )
-    year: number,
+    query: TrackedHabitAPI.GetTrackedHabitsGrid.Query,
     @Req() req: AuthenticatedRequest,
   ): Promise<TrackedHabitAPI.GetTrackedHabitsGrid.Response> {
     return await this.getTrackedHabitsGridQuery.execute({
+      year: parseInt(query.year),
       userId: req.user.props.id,
-      year,
     });
   }
 }
