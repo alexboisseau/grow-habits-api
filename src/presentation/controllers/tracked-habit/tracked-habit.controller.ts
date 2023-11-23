@@ -28,7 +28,7 @@ export class TrackedHabitController {
   ) {}
 
   @UseGuards(SessionGuard)
-  @Get('tracked-habits')
+  @Get('/tracked-habits')
   async handleGetTrackedHabitsByDateAndUserId(
     @Query(
       new ZodValidationPipe(
@@ -55,7 +55,7 @@ export class TrackedHabitController {
   }
 
   @UseGuards(SessionGuard)
-  @Get('tracked-habits-grid')
+  @Get('/tracked-habits-grid')
   async handleGetTrackedHabitsGrid(
     @Query(
       new ZodValidationPipe(TrackedHabitAPI.GetTrackedHabitsGrid.requestSchema),
