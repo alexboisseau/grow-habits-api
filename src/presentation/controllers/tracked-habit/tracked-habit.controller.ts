@@ -28,10 +28,10 @@ export class TrackedHabitController {
   async handleGetTrackedHabitsByDateAndUserId(
     @Query(
       new ZodValidationPipe(
-        TrackedHabitAPI.GetTrackedHabitsByDateAndUserId.querySchema,
+        TrackedHabitAPI.GetTrackedHabitsByDateAndUserId.requestSchema,
       ),
     )
-    query: TrackedHabitAPI.GetTrackedHabitsByDateAndUserId.Query,
+    query: TrackedHabitAPI.GetTrackedHabitsByDateAndUserId.Request,
     @Req() req: AuthenticatedRequest,
   ): Promise<TrackedHabitAPI.GetTrackedHabitsByDateAndUserId.Response> {
     const trackedHabits = await this.getTrackedHabitsByDateAndUserId.execute({
@@ -46,9 +46,9 @@ export class TrackedHabitController {
   @Get('tracked-habits-grid')
   async handleGetTrackedHabitsGrid(
     @Query(
-      new ZodValidationPipe(TrackedHabitAPI.GetTrackedHabitsGrid.querySchema),
+      new ZodValidationPipe(TrackedHabitAPI.GetTrackedHabitsGrid.requestSchema),
     )
-    query: TrackedHabitAPI.GetTrackedHabitsGrid.Query,
+    query: TrackedHabitAPI.GetTrackedHabitsGrid.Request,
     @Req() req: AuthenticatedRequest,
   ): Promise<TrackedHabitAPI.GetTrackedHabitsGrid.Response> {
     return await this.getTrackedHabitsGridQuery.execute({

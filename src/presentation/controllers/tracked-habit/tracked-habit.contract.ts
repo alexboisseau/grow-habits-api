@@ -3,12 +3,11 @@ import { TrackedHabitStatus } from '../../../domain/entities/tracked-habit.entit
 
 export namespace TrackedHabitAPI {
   export namespace GetTrackedHabitsByDateAndUserId {
-    const dateQueryParam = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
-    export const querySchema = z.object({
-      date: dateQueryParam,
+    export const requestSchema = z.object({
+      date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
     });
 
-    export type Query = z.infer<typeof querySchema>;
+    export type Request = z.infer<typeof requestSchema>;
 
     export type Response = Array<{
       id: string;
@@ -20,12 +19,11 @@ export namespace TrackedHabitAPI {
   }
 
   export namespace GetTrackedHabitsGrid {
-    const yearQueryParam = z.string().regex(/^\d{4}$/);
-    export const querySchema = z.object({
-      year: yearQueryParam,
+    export const requestSchema = z.object({
+      year: z.string().regex(/^\d{4}$/),
     });
 
-    export type Query = z.infer<typeof querySchema>;
+    export type Request = z.infer<typeof requestSchema>;
 
     export type Response = Array<{
       date: Date;
