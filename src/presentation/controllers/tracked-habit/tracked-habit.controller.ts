@@ -50,9 +50,7 @@ export class TrackedHabitController {
     userId: string,
     @Req() req: AuthenticatedRequest,
   ): Promise<TrackedHabitAPI.GetTrackedHabitsByDateAndUserId.Response> {
-    if (req.user.props.id !== userId) {
-      throw new UnauthorizedException();
-    }
+    this.validateUserId(userId, req);
 
     const trackedHabits = await this.getTrackedHabitsByDateAndUserId.execute({
       date,
@@ -81,13 +79,17 @@ export class TrackedHabitController {
     year: number,
     @Req() req: AuthenticatedRequest,
   ): Promise<TrackedHabitAPI.GetTrackedHabitsGrid.Response> {
-    if (req.user.props.id !== userId) {
-      throw new UnauthorizedException();
-    }
+    this.validateUserId(userId, req);
 
     return await this.getTrackedHabitsGridQuery.execute({
       userId,
       year,
     });
+  }
+
+  private validateUserId(userId: string, req: AuthenticatedRequest) {
+    if (req.user.props.id !== userId) {
+      throw new UnauthorizedException();
+    }
   }
 }
