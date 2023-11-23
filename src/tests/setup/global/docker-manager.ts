@@ -18,7 +18,7 @@ export const startDocker = async () => {
   ).up();
 
   console.log('\n🚀 running prisma migrate dev ...');
-  ChildProcess.execSync('pnpm exec prisma migrate dev');
+  ChildProcess.execSync('npm run prisma:migrate:dev');
 };
 
 export const stopDocker = async () => {

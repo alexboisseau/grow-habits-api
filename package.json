@@ -18,7 +18,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "dotenv -e .env.tests -- jest --config jest.config.e2e.ts",
-    "prisma:migrate": "dotenv -e .env.development -- prisma migrate dev --name \"$(date +%s)\""
+    "prisma:migrate:dev": "dotenv -e .env.development -- prisma migrate dev --name \"$(date +%s)\""
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
