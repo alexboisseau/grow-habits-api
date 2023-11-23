@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Get,
-  Inject,
-  Query,
-  Req,
-  UnauthorizedException,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Inject, Query, Req, UseGuards } from '@nestjs/common';
 import {
   IGetTrackedHabitsGridQuery,
   I_GET_TRACKED_HABITS_GRID_QUERY,
@@ -41,20 +33,11 @@ export class TrackedHabitController {
       ),
     )
     date: string,
-    @Query(
-      'userId',
-      new ZodValidationPipe(
-        TrackedHabitAPI.GetTrackedHabitsByDateAndUserId.userIdQuery,
-      ),
-    )
-    userId: string,
     @Req() req: AuthenticatedRequest,
   ): Promise<TrackedHabitAPI.GetTrackedHabitsByDateAndUserId.Response> {
-    this.validateUserId(userId, req);
-
     const trackedHabits = await this.getTrackedHabitsByDateAndUserId.execute({
       date,
-      userId,
+      userId: req.user.props.id,
     });
 
     return this.getTrackedHabitsByDateAndUserIdPresenter.present(trackedHabits);
@@ -64,13 +47,6 @@ export class TrackedHabitController {
   @Get('tracked-habits-grid')
   async handleGetTrackedHabitsGrid(
     @Query(
-      'userId',
-      new ZodValidationPipe(
-        TrackedHabitAPI.GetTrackedHabitsGrid.userIdQueryParam,
-      ),
-    )
-    userId: string,
-    @Query(
       'year',
       new ZodValidationPipe(
         TrackedHabitAPI.GetTrackedHabitsGrid.yearQueryParam,
@@ -79,17 +55,9 @@ export class TrackedHabitController {
     year: number,
     @Req() req: AuthenticatedRequest,
   ): Promise<TrackedHabitAPI.GetTrackedHabitsGrid.Response> {
-    this.validateUserId(userId, req);
-
     return await this.getTrackedHabitsGridQuery.execute({
-      userId,
+      userId: req.user.props.id,
       year,
     });
-  }
-
-  private validateUserId(userId: string, req: AuthenticatedRequest) {
-    if (req.user.props.id !== userId) {
-      throw new UnauthorizedException();
-    }
   }
 }
