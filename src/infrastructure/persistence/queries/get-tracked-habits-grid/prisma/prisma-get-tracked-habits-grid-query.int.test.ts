@@ -44,6 +44,7 @@ describe('Query : Get tracked habits by date and user id', () => {
     new PrismaGetTrackedHabitsGridQuery(prismaService);
 
   beforeAll(async () => {
+    await clearDatabase();
     await initializeDatabase();
   });
 
@@ -232,7 +233,7 @@ describe('Query : Get tracked habits by date and user id', () => {
           trackedFrom: new Date('2023-02-01'),
         },
         {
-          ...habitSeeds.breakfast.props,
+          ...habitSeeds.makeMyBed.props,
           trackedFrom: new Date('2023-08-01'),
         },
       ]);

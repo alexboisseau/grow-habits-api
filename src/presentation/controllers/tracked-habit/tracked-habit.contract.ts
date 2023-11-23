@@ -10,13 +10,24 @@ export namespace TrackedHabitAPI {
       date: dateQuery,
     });
 
-    export type Request = { userId: string } & z.infer<typeof querySchema>;
     export type Response = Array<{
       id: string;
       date: string;
       status: TrackedHabitStatus;
       habitId: string;
       userId: string;
+    }>;
+  }
+
+  export namespace GetTrackedHabitsGrid {
+    export const userIdQueryParam = z.string();
+    export const yearQueryParam = z.string().regex(/^\d{4}$/);
+
+    export type Response = Array<{
+      date: Date;
+      completedTrackedHabitsCount: number;
+      uncompletedTrackedHabitsCount: number;
+      habitsCount: number;
     }>;
   }
 }

@@ -16,6 +16,10 @@ import {
 import { GetTrackedHabitsByDateAndUserIdPresenter } from './tracked-habit.presenter';
 import { SessionGuard } from '../../middlewares/guards/session.guard';
 import { User } from '../../../domain/entities/user.entity';
+import {
+  IGetTrackedHabitsGridQuery,
+  I_GET_TRACKED_HABITS_GRID_QUERY,
+} from '../../../domain/ports/get-tracked-habits-grid-query.port';
 
 @Controller()
 export class TrackedHabitController {
@@ -23,6 +27,8 @@ export class TrackedHabitController {
     @Inject(I_GET_TRACKED_HABITS_BY_DATE_AND_USER_ID_QUERY)
     private readonly getTrackedHabitsByDateAndUserId: IGetTrackedHabitsByDateAndUserIdQuery,
     private readonly getTrackedHabitsByDateAndUserIdPresenter: GetTrackedHabitsByDateAndUserIdPresenter,
+    @Inject(I_GET_TRACKED_HABITS_GRID_QUERY)
+    private readonly getTrackedHabitsGridQuery: IGetTrackedHabitsGridQuery,
   ) {}
 
   @UseGuards(SessionGuard)
@@ -54,5 +60,34 @@ export class TrackedHabitController {
     });
 
     return this.getTrackedHabitsByDateAndUserIdPresenter.present(trackedHabits);
+  }
+
+  @UseGuards(SessionGuard)
+  @Get('tracked-habits-grid')
+  async handleGetTrackedHabitsGrid(
+    @Query(
+      'userId',
+      new ZodValidationPipe(
+        TrackedHabitAPI.GetTrackedHabitsGrid.userIdQueryParam,
+      ),
+    )
+    userId: string,
+    @Query(
+      'year',
+      new ZodValidationPipe(
+        TrackedHabitAPI.GetTrackedHabitsGrid.yearQueryParam,
+      ),
+    )
+    year: number,
+    @Req() req: Request & { user: User },
+  ): Promise<TrackedHabitAPI.GetTrackedHabitsGrid.Response> {
+    if (req.user.props.id !== userId) {
+      throw new UnauthorizedException();
+    }
+
+    return await this.getTrackedHabitsGridQuery.execute({
+      userId,
+      year,
+    });
   }
 }

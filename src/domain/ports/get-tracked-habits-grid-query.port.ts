@@ -1,4 +1,5 @@
-export const I_GET_TRACKED_HABIT_GRID_QUERY = 'I_GET_TRACKED_HABIT_GRID_QUERY';
+export const I_GET_TRACKED_HABITS_GRID_QUERY =
+  'I_GET_TRACKED_HABITS_GRID_QUERY';
 
 export type IGetTrackedHabitsGridQueryRequest = {
   year: number;

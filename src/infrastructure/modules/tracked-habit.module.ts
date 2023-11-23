@@ -6,6 +6,8 @@ import { PrismaModule } from './prisma.module';
 import { PrismaTrackedHabitMapper } from '../persistence/repositories/habit/prisma/prisma-tracked-habit.mapper';
 import { PRISMA_SERVICE } from '../persistence/prisma/prisma.service';
 import { GetTrackedHabitsByDateAndUserIdPresenter } from '../../presentation/controllers/tracked-habit/tracked-habit.presenter';
+import { I_GET_TRACKED_HABITS_GRID_QUERY } from '../../domain/ports/get-tracked-habits-grid-query.port';
+import { PrismaGetTrackedHabitsGridQuery } from '../persistence/queries/get-tracked-habits-grid/prisma/prisma-get-tracked-habits-grid-query';
 
 @Module({
   imports: [PrismaModule],
@@ -20,6 +22,13 @@ import { GetTrackedHabitsByDateAndUserIdPresenter } from '../../presentation/con
           prisma,
           trackedHabitMapper,
         );
+      },
+    },
+    {
+      provide: I_GET_TRACKED_HABITS_GRID_QUERY,
+      inject: [PRISMA_SERVICE],
+      useFactory: (prisma) => {
+        return new PrismaGetTrackedHabitsGridQuery(prisma);
       },
     },
   ],
