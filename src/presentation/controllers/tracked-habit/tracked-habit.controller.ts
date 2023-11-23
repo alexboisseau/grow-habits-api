@@ -7,19 +7,19 @@ import {
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import { ZodValidationPipe } from '../../middlewares/pipes/zod-validation.pipe';
-import { TrackedHabitAPI } from './tracked-habit.contract';
-import {
-  IGetTrackedHabitsByDateAndUserIdQuery,
-  I_GET_TRACKED_HABITS_BY_DATE_AND_USER_ID_QUERY,
-} from '../../../domain/ports/get-tracked-habits-by-date-and-user-id.port';
-import { GetTrackedHabitsByDateAndUserIdPresenter } from './tracked-habit.presenter';
-import { SessionGuard } from '../../middlewares/guards/session.guard';
-import { User } from '../../../domain/entities/user.entity';
 import {
   IGetTrackedHabitsGridQuery,
   I_GET_TRACKED_HABITS_GRID_QUERY,
 } from '../../../domain/ports/get-tracked-habits-grid-query.port';
+import {
+  IGetTrackedHabitsByDateAndUserIdQuery,
+  I_GET_TRACKED_HABITS_BY_DATE_AND_USER_ID_QUERY,
+} from '../../../domain/ports/get-tracked-habits-by-date-and-user-id.port';
+import { TrackedHabitAPI } from './tracked-habit.contract';
+import { GetTrackedHabitsByDateAndUserIdPresenter } from './tracked-habit.presenter';
+import { ZodValidationPipe } from '../../middlewares/pipes/zod-validation.pipe';
+import { SessionGuard } from '../../middlewares/guards/session.guard';
+import { AuthenticatedRequest } from '../../shared/authenticated-request';
 
 @Controller()
 export class TrackedHabitController {
@@ -48,7 +48,7 @@ export class TrackedHabitController {
       ),
     )
     userId: string,
-    @Req() req: Request & { user: User },
+    @Req() req: AuthenticatedRequest,
   ): Promise<TrackedHabitAPI.GetTrackedHabitsByDateAndUserId.Response> {
     if (req.user.props.id !== userId) {
       throw new UnauthorizedException();
@@ -79,7 +79,7 @@ export class TrackedHabitController {
       ),
     )
     year: number,
-    @Req() req: Request & { user: User },
+    @Req() req: AuthenticatedRequest,
   ): Promise<TrackedHabitAPI.GetTrackedHabitsGrid.Response> {
     if (req.user.props.id !== userId) {
       throw new UnauthorizedException();

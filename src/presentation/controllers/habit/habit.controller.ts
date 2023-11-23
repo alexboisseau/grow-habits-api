@@ -4,9 +4,9 @@ import { UpdateTrackedHabitStatus } from '../../../application/usecases/update-t
 import { SessionGuard } from '../../middlewares/guards/session.guard';
 import { ZodValidationPipe } from '../../middlewares/pipes/zod-validation.pipe';
 import { HabitAPI } from './habit.contract';
-import { User } from '../../../domain/entities/user.entity';
 import { CreateHabitToTrackExceptionsMapper } from './exceptions-mapper/create-habit-to-track-exceptions-mapper';
 import { UpdateTrackedHabitStatusExceptionsMapper } from './exceptions-mapper/update-tracked-habit-status-exceptions-mapper';
+import { AuthenticatedRequest } from '../../shared/authenticated-request';
 
 @Controller()
 export class HabitController {
@@ -22,7 +22,7 @@ export class HabitController {
   async handleCreateHabitToTrack(
     @Body(new ZodValidationPipe(HabitAPI.CreateHabitToTrack.schema))
     body: HabitAPI.CreateHabitToTrack.Request,
-    @Req() req: Request & { user: User },
+    @Req() req: AuthenticatedRequest,
   ) {
     try {
       return await this.createHabitToTrack.execute({
@@ -40,7 +40,7 @@ export class HabitController {
     @Body(new ZodValidationPipe(HabitAPI.UpdateTrackedHabitStatus.schema))
     body: HabitAPI.UpdateTrackedHabitStatus.Request,
     @Param('habitId') habitId: string,
-    @Req() req: Request & { user: User },
+    @Req() req: AuthenticatedRequest,
   ) {
     try {
       return await this.updateTrackedHabitStatus.execute({
