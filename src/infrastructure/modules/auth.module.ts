@@ -8,6 +8,7 @@ import { CommonModule } from './common.module';
 import { I_USER_REPOSITORY } from '../../domain/ports/user-repository.port';
 import { I_PASSWORD_HASHER } from '../../domain/ports/password-hasher.port';
 import { AuthController } from '../../presentation/controllers/auth/auth.controller';
+import { LoginPresenter } from '../../presentation/controllers/auth/auth.presenter';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { AuthController } from '../../presentation/controllers/auth/auth.control
   ],
   providers: [
     LocalStrategy,
+    LoginPresenter,
     {
       provide: AuthService,
       inject: [I_USER_REPOSITORY, I_PASSWORD_HASHER],
