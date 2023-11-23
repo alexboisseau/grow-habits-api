@@ -3,9 +3,9 @@ import { ConfirmPasswordException } from '../../../../application/usecases/regis
 import { EmailAlreadyUsedException } from '../../../../application/usecases/register/exceptions/email-already-used.exception';
 import { EmailFormatException } from '../../../../application/usecases/register/exceptions/email-format.exception';
 import { PasswordLengthException } from '../../../../application/usecases/register/exceptions/password-length.exception';
-import { IExceptionsMapper } from '../../../shared/exceptions-mapper';
+import { ExceptionsMapper } from '../../../shared/exceptions-mapper';
 
-export class RegisterExceptionsMapper implements IExceptionsMapper {
+export class RegisterExceptionsMapper extends ExceptionsMapper {
   map(error: Error) {
     if (error instanceof ConfirmPasswordException) {
       return new HttpException(error.message, HttpStatus.BAD_REQUEST);
@@ -23,9 +23,6 @@ export class RegisterExceptionsMapper implements IExceptionsMapper {
       return new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
 
-    return new HttpException(
-      'Internal server error',
-      HttpStatus.INTERNAL_SERVER_ERROR,
-    );
+    return this.defaultException;
   }
 }

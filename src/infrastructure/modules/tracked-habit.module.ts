@@ -8,11 +8,15 @@ import { PRISMA_SERVICE } from '../persistence/prisma/prisma.service';
 import { GetTrackedHabitsByDateAndUserIdPresenter } from '../../presentation/controllers/tracked-habit/tracked-habit.presenter';
 import { I_GET_TRACKED_HABITS_GRID_QUERY } from '../../domain/ports/get-tracked-habits-grid-query.port';
 import { PrismaGetTrackedHabitsGridQuery } from '../persistence/queries/get-tracked-habits-grid/prisma/prisma-get-tracked-habits-grid-query';
+import { GetTrackedHabitsByDateAndUserIdQueryExceptionsMapper } from '../../presentation/controllers/tracked-habit/exceptions-mapper/get-tracked-habits-by-date-and-user-id-query-exceptions-mapper';
+import { GetTrackedHabitsGridQueryExceptionsMapper } from '../../presentation/controllers/tracked-habit/exceptions-mapper/get-tracked-habits-grid-query-exceptions-mapper';
 
 @Module({
   imports: [PrismaModule],
   providers: [
     GetTrackedHabitsByDateAndUserIdPresenter,
+    GetTrackedHabitsByDateAndUserIdQueryExceptionsMapper,
+    GetTrackedHabitsGridQueryExceptionsMapper,
     PrismaTrackedHabitMapper,
     {
       provide: I_GET_TRACKED_HABITS_BY_DATE_AND_USER_ID_QUERY,

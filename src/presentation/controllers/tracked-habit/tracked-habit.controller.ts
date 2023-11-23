@@ -12,6 +12,8 @@ import { GetTrackedHabitsByDateAndUserIdPresenter } from './tracked-habit.presen
 import { ZodValidationPipe } from '../../middlewares/pipes/zod-validation.pipe';
 import { SessionGuard } from '../../middlewares/guards/session.guard';
 import { AuthenticatedRequest } from '../../shared/authenticated-request';
+import { GetTrackedHabitsGridQueryExceptionsMapper } from './exceptions-mapper/get-tracked-habits-grid-query-exceptions-mapper';
+import { GetTrackedHabitsByDateAndUserIdQueryExceptionsMapper } from './exceptions-mapper/get-tracked-habits-by-date-and-user-id-query-exceptions-mapper';
 
 @Controller()
 export class TrackedHabitController {
@@ -19,8 +21,10 @@ export class TrackedHabitController {
     @Inject(I_GET_TRACKED_HABITS_BY_DATE_AND_USER_ID_QUERY)
     private readonly getTrackedHabitsByDateAndUserId: IGetTrackedHabitsByDateAndUserIdQuery,
     private readonly getTrackedHabitsByDateAndUserIdPresenter: GetTrackedHabitsByDateAndUserIdPresenter,
+    private readonly getTrackedHabitsByDateAndUserIdQueryExceptionsMapper: GetTrackedHabitsByDateAndUserIdQueryExceptionsMapper,
     @Inject(I_GET_TRACKED_HABITS_GRID_QUERY)
     private readonly getTrackedHabitsGridQuery: IGetTrackedHabitsGridQuery,
+    private readonly getTrackedHabitsGridQueryExceptionsMapper: GetTrackedHabitsGridQueryExceptionsMapper,
   ) {}
 
   @UseGuards(SessionGuard)
@@ -34,12 +38,20 @@ export class TrackedHabitController {
     query: TrackedHabitAPI.GetTrackedHabitsByDateAndUserId.Request,
     @Req() req: AuthenticatedRequest,
   ): Promise<TrackedHabitAPI.GetTrackedHabitsByDateAndUserId.Response> {
-    const trackedHabits = await this.getTrackedHabitsByDateAndUserId.execute({
-      ...query,
-      userId: req.user.props.id,
-    });
+    try {
+      const trackedHabits = await this.getTrackedHabitsByDateAndUserId.execute({
+        ...query,
+        userId: req.user.props.id,
+      });
 
-    return this.getTrackedHabitsByDateAndUserIdPresenter.present(trackedHabits);
+      return this.getTrackedHabitsByDateAndUserIdPresenter.present(
+        trackedHabits,
+      );
+    } catch (error) {
+      throw this.getTrackedHabitsByDateAndUserIdQueryExceptionsMapper.map(
+        error,
+      );
+    }
   }
 
   @UseGuards(SessionGuard)
@@ -51,9 +63,13 @@ export class TrackedHabitController {
     query: TrackedHabitAPI.GetTrackedHabitsGrid.Request,
     @Req() req: AuthenticatedRequest,
   ): Promise<TrackedHabitAPI.GetTrackedHabitsGrid.Response> {
-    return await this.getTrackedHabitsGridQuery.execute({
-      year: parseInt(query.year),
-      userId: req.user.props.id,
-    });
+    try {
+      return await this.getTrackedHabitsGridQuery.execute({
+        year: parseInt(query.year),
+        userId: req.user.props.id,
+      });
+    } catch (error) {
+      throw this.getTrackedHabitsGridQueryExceptionsMapper.map(error);
+    }
   }
 }
