@@ -48,15 +48,22 @@ describe('Query : get user habits to track', () => {
 
   describe('Unhappy path', () => {
     it('should fail if user is not connected', async () => {
-      const result = await request(app.getHttpServer()).get(
+      const result = await agent.get(
         '/tracked-habits/?date=2023-01-01&userId=' + aliceId,
       );
 
-      expect(result.status).toEqual(403);
+      expect(result.status).toEqual(401);
     });
 
     it('should fail if user connected request another user habits', async () => {
-      const result = await request(app.getHttpServer()).get(
+      const loginParams: LoginParams = {
+        agent,
+        email: e2eUsers.alice.entity.props.email,
+        password: 'Welcome@123',
+      };
+      await login(loginParams);
+
+      const result = await agent.get(
         '/tracked-habits/?date=2023-01-01&userId=' + bobId,
       );
 

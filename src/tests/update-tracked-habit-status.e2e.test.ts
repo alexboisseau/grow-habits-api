@@ -90,7 +90,7 @@ describe('Feature: update tracked habit status', () => {
         .post('/habits/id-1/update-status')
         .send(payload);
 
-      expect(result.status).toEqual(403);
+      expect(result.status).toEqual(401);
     });
   });
 });

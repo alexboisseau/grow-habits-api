@@ -57,7 +57,7 @@ describe('Feature : create habit to track', () => {
         .post('/habits')
         .send(payload);
 
-      expect(result.status).toEqual(403);
+      expect(result.status).toEqual(401);
     });
   });
 });

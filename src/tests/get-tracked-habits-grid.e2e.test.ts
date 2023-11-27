@@ -42,11 +42,11 @@ describe('Query : get tracked habits grid', () => {
 
   describe('Unhappy path', () => {
     it('should fail if the user is not connected', async () => {
-      const result = await request(app.getHttpServer()).get(
+      const result = await agent.get(
         '/tracked-habits-grid?year=2023&userId=' + aliceId,
       );
 
-      expect(result.status).toEqual(403);
+      expect(result.status).toEqual(401);
     });
 
     it('should fail if the user connected request another user tracked habits grid', async () => {
@@ -56,7 +56,8 @@ describe('Query : get tracked habits grid', () => {
         password: 'Welcome@123',
       };
       await login(loginParams);
-      const result = await request(app.getHttpServer()).get(
+
+      const result = await agent.get(
         '/tracked-habits-grid?year=2023&userId=' + bobId,
       );
 
