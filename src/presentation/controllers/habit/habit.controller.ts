@@ -7,6 +7,7 @@ import { HabitAPI } from './habit.contract';
 import { CreateHabitToTrackExceptionsMapper } from './exceptions-mapper/create-habit-to-track-exceptions-mapper';
 import { UpdateTrackedHabitStatusExceptionsMapper } from './exceptions-mapper/update-tracked-habit-status-exceptions-mapper';
 import { AuthenticatedRequest } from '../../shared/authenticated-request';
+import { HabitPresenter } from './habit.presenter';
 
 @Controller()
 export class HabitController {
@@ -15,6 +16,7 @@ export class HabitController {
     private readonly updateTrackedHabitStatus: UpdateTrackedHabitStatus,
     private readonly createHabitToTrackExceptionsMapper: CreateHabitToTrackExceptionsMapper,
     private readonly updateTrackedHabitStatusExceptionsMapper: UpdateTrackedHabitStatusExceptionsMapper,
+    private readonly presenter: HabitPresenter,
   ) {}
 
   @UseGuards(SessionGuard)
@@ -25,12 +27,12 @@ export class HabitController {
     @Req() req: AuthenticatedRequest,
   ): Promise<HabitAPI.CreateHabitToTrack.Response> {
     try {
-      const habit = await this.createHabitToTrack.execute({
+      const response = await this.createHabitToTrack.execute({
         ...body,
         user: req.user,
       });
 
-      return habit.initialState;
+      return this.presenter.presentCreateHabitToTrackResponse(response);
     } catch (error) {
       throw this.createHabitToTrackExceptionsMapper.map(error);
     }

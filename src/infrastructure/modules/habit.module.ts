@@ -15,6 +15,7 @@ import { PrismaHabitMapper } from '../persistence/repositories/habit/prisma/pris
 import { PrismaTrackedHabitMapper } from '../persistence/repositories/habit/prisma/prisma-tracked-habit.mapper';
 import { PRISMA_SERVICE } from '../persistence/prisma/prisma.service';
 import { PrismaModule } from './prisma.module';
+import { HabitPresenter } from '../../presentation/controllers/habit/habit.presenter';
 
 @Module({
   imports: [CommonModule, PrismaModule],
@@ -23,6 +24,7 @@ import { PrismaModule } from './prisma.module';
     UpdateTrackedHabitStatusExceptionsMapper,
     PrismaHabitMapper,
     PrismaTrackedHabitMapper,
+    HabitPresenter,
     {
       provide: I_HABIT_REPOSITORY,
       inject: [PRISMA_SERVICE, PrismaHabitMapper],

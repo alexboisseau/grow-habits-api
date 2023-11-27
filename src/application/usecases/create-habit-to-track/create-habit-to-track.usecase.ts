@@ -14,7 +14,7 @@ type Request = {
   user: User;
 };
 
-type Response = Habit;
+export type Response = Habit;
 
 export class CreateHabitToTrack implements UseCase<Request, Response> {
   constructor(
