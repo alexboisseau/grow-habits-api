@@ -11,6 +11,7 @@ import {
   HABIT_RESPONSE_MIN_LENGTH,
   HABIT_REWARD_MAX_LENGTH,
   HABIT_REWARD_MIN_LENGTH,
+  HabitProps,
 } from '../../../domain/entities/habit.entity';
 
 export namespace HabitAPI {
@@ -33,9 +34,7 @@ export namespace HabitAPI {
     });
 
     export type Request = z.infer<typeof schema>;
-    export type Response = {
-      id: string;
-    };
+    export type Response = HabitProps;
   }
 
   export namespace UpdateTrackedHabitStatus {

@@ -38,6 +38,16 @@ describe('Feature : create habit to track', () => {
       const result = await agent.post('/habits').send(payload);
 
       expect(result.status).toEqual(201);
+      expect(result.body).toEqual({
+        id: expect.any(String),
+        name: payload.name,
+        cue: payload.cue,
+        craving: payload.craving,
+        response: payload.response,
+        reward: payload.reward,
+        trackedFrom: expect.any(String),
+        userId: e2eUsers.alice.entity.props.id,
+      });
     });
   });
 

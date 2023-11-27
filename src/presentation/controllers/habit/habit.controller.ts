@@ -23,12 +23,14 @@ export class HabitController {
     @Body(new ZodValidationPipe(HabitAPI.CreateHabitToTrack.schema))
     body: HabitAPI.CreateHabitToTrack.Request,
     @Req() req: AuthenticatedRequest,
-  ) {
+  ): Promise<HabitAPI.CreateHabitToTrack.Response> {
     try {
-      return await this.createHabitToTrack.execute({
+      const habit = await this.createHabitToTrack.execute({
         ...body,
         user: req.user,
       });
+
+      return habit.initialState;
     } catch (error) {
       throw this.createHabitToTrackExceptionsMapper.map(error);
     }

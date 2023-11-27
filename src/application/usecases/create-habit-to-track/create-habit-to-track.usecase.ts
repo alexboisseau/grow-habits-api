@@ -14,9 +14,7 @@ type Request = {
   user: User;
 };
 
-type Response = {
-  id: string;
-};
+type Response = Habit;
 
 export class CreateHabitToTrack implements UseCase<Request, Response> {
   constructor(
@@ -41,6 +39,6 @@ export class CreateHabitToTrack implements UseCase<Request, Response> {
     });
 
     await this.habitRepository.create(habit);
-    return { id };
+    return habit;
   }
 }
