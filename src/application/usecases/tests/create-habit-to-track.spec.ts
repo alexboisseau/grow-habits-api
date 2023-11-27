@@ -47,14 +47,15 @@ describe('Feature : create a habit to track', () => {
 
     it('should create a new habit and return an id', async () => {
       const response = await useCase.execute(payload);
-
-      expect(response.id).toEqual('id-1');
+      expectHabitToEqual(response);
     });
 
     it('should save the habit in the persistence layer', async () => {
       const response = await useCase.execute(payload);
 
-      const savedHabit = (await habitRepository.findById(response.id)) as Habit;
+      const savedHabit = (await habitRepository.findById(
+        response.props.id,
+      )) as Habit;
 
       expectHabitToEqual(savedHabit);
     });
@@ -62,7 +63,9 @@ describe('Feature : create a habit to track', () => {
     it('should add a date field to know from when the user start to track the habit', async () => {
       const response = await useCase.execute(payload);
 
-      const savedHabit = (await habitRepository.findById(response.id)) as Habit;
+      const savedHabit = (await habitRepository.findById(
+        response.props.id,
+      )) as Habit;
 
       expect(savedHabit.props.trackedFrom).toEqual(dateGenerator.now());
     });
