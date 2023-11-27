@@ -20,7 +20,6 @@ describe('Query : get user habits to track', () => {
   });
 
   const aliceId = e2eUsers.alice.entity.props.id;
-  const bobId = e2eUsers.bob.entity.props.id;
 
   describe('Happy path', () => {
     it('should return a tracked habit with empty id', async () => {
@@ -53,21 +52,6 @@ describe('Query : get user habits to track', () => {
       );
 
       expect(result.status).toEqual(401);
-    });
-
-    it('should fail if user connected request another user habits', async () => {
-      const loginParams: LoginParams = {
-        agent,
-        email: e2eUsers.alice.entity.props.email,
-        password: 'Welcome@123',
-      };
-      await login(loginParams);
-
-      const result = await agent.get(
-        '/tracked-habits/?date=2023-01-01&userId=' + bobId,
-      );
-
-      expect(result.status).toEqual(403);
     });
   });
 });

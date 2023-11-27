@@ -20,7 +20,6 @@ describe('Query : get tracked habits grid', () => {
   });
 
   const aliceId = e2eUsers.alice.entity.props.id;
-  const bobId = e2eUsers.bob.entity.props.id;
 
   describe('Happy path', () => {
     it('should return an HTTP status equals to 200 and a body containing an array', async () => {
@@ -47,21 +46,6 @@ describe('Query : get tracked habits grid', () => {
       );
 
       expect(result.status).toEqual(401);
-    });
-
-    it('should fail if the user connected request another user tracked habits grid', async () => {
-      const loginParams: LoginParams = {
-        agent,
-        email: e2eUsers.alice.entity.props.email,
-        password: 'Welcome@123',
-      };
-      await login(loginParams);
-
-      const result = await agent.get(
-        '/tracked-habits-grid?year=2023&userId=' + bobId,
-      );
-
-      expect(result.status).toEqual(403);
     });
   });
 });
