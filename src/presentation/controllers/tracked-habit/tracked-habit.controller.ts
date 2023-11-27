@@ -1,4 +1,13 @@
-import { Controller, Get, Inject, Query, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Inject,
+  Put,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import {
   IGetTrackedHabitsGridQuery,
   I_GET_TRACKED_HABITS_GRID_QUERY,
@@ -14,6 +23,8 @@ import { SessionGuard } from '../../middlewares/guards/session.guard';
 import { AuthenticatedRequest } from '../../shared/authenticated-request';
 import { GetTrackedHabitsGridQueryExceptionsMapper } from './exceptions-mapper/get-tracked-habits-grid-query-exceptions-mapper';
 import { GetTrackedHabitsByDateAndUserIdQueryExceptionsMapper } from './exceptions-mapper/get-tracked-habits-by-date-and-user-id-query-exceptions-mapper';
+import { UpdateTrackedHabitStatus } from '../../../application/usecases/update-tracked-habit-status/update-tracked-habit-status.usecase';
+import { UpdateTrackedHabitStatusExceptionsMapper } from './exceptions-mapper/update-tracked-habit-status-exceptions-mapper';
 
 @Controller()
 export class TrackedHabitController {
@@ -25,6 +36,8 @@ export class TrackedHabitController {
     @Inject(I_GET_TRACKED_HABITS_GRID_QUERY)
     private readonly getTrackedHabitsGridQuery: IGetTrackedHabitsGridQuery,
     private readonly getTrackedHabitsGridQueryExceptionsMapper: GetTrackedHabitsGridQueryExceptionsMapper,
+    private readonly updateTrackedHabitStatus: UpdateTrackedHabitStatus,
+    private readonly updateTrackedHabitStatusExceptionsMapper: UpdateTrackedHabitStatusExceptionsMapper,
   ) {}
 
   @UseGuards(SessionGuard)
@@ -70,6 +83,25 @@ export class TrackedHabitController {
       });
     } catch (error) {
       throw this.getTrackedHabitsGridQueryExceptionsMapper.map(error);
+    }
+  }
+
+  @UseGuards(SessionGuard)
+  @Put('/tracked-habits/update-status')
+  async handleUpdateTrackedHabitStatus(
+    @Body(
+      new ZodValidationPipe(TrackedHabitAPI.UpdateTrackedHabitStatus.schema),
+    )
+    body: TrackedHabitAPI.UpdateTrackedHabitStatus.Request,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    try {
+      return await this.updateTrackedHabitStatus.execute({
+        ...body,
+        user: req.user,
+      });
+    } catch (error) {
+      throw this.updateTrackedHabitStatusExceptionsMapper.map(error);
     }
   }
 }

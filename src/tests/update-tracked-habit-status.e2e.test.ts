@@ -28,6 +28,7 @@ describe('Feature: update tracked habit status', () => {
   const payload = {
     date: '2023-01-03',
     status: TrackedHabitStatus.COMPLETED,
+    habitId: 'id-1',
   };
 
   describe('Happy path', () => {
@@ -40,10 +41,10 @@ describe('Feature: update tracked habit status', () => {
       await login(loginParams);
 
       const result = await agent
-        .post('/habits/id-1/update-status')
+        .put('/tracked-habits/update-status')
         .send(payload);
 
-      expect(result.status).toEqual(201);
+      expect(result.status).toEqual(200);
 
       const trackedHabitRepository = app.get<ITrackedHabitRepository>(
         I_TRACKED_HABIT_REPOSITORY,
@@ -66,10 +67,10 @@ describe('Feature: update tracked habit status', () => {
       await login(loginParams);
 
       const result = await agent
-        .post('/habits/id-1/update-status')
+        .put('/tracked-habits/update-status')
         .send({ ...payload, status: TrackedHabitStatus.TO_COMPLETE });
 
-      expect(result.status).toEqual(201);
+      expect(result.status).toEqual(200);
 
       const trackedHabitRepository = app.get<ITrackedHabitRepository>(
         I_TRACKED_HABIT_REPOSITORY,
@@ -87,7 +88,7 @@ describe('Feature: update tracked habit status', () => {
   describe('Unhappy path', () => {
     it('should fail if user is not connected', async () => {
       const result = await agent
-        .post('/habits/id-1/update-status')
+        .put('/tracked-habits/update-status')
         .send(payload);
 
       expect(result.status).toEqual(401);

@@ -1,5 +1,8 @@
 import { z } from 'zod';
-import { TrackedHabitStatus } from '../../../domain/entities/tracked-habit.entity';
+import {
+  TRACKED_HABIT_STATUS,
+  TrackedHabitStatus,
+} from '../../../domain/entities/tracked-habit.entity';
 
 export namespace TrackedHabitAPI {
   export namespace GetTrackedHabitsByDateAndUserId {
@@ -31,5 +34,16 @@ export namespace TrackedHabitAPI {
       uncompletedTrackedHabitsCount: number;
       habitsCount: number;
     }>;
+  }
+
+  export namespace UpdateTrackedHabitStatus {
+    export const schema = z.object({
+      date: z.string().refine((value) => !isNaN(Date.parse(value))),
+      status: z.enum(TRACKED_HABIT_STATUS),
+      habitId: z.string(),
+    });
+
+    export type Request = z.infer<typeof schema>;
+    export type Response = void;
   }
 }
