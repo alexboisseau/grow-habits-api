@@ -2,15 +2,9 @@ import * as request from 'supertest';
 import { TestApp } from './utils/test-app';
 import { e2eUsers } from './seeds/user-seeds';
 import { e2eHabits } from './seeds/habit-seeds';
+import { LoginParams, login } from './utils/login';
 
 describe('Query : get tracked habits grid', () => {
-  async function login(agent: request.SuperAgentTest) {
-    await agent.post('/login').send({
-      email: e2eUsers.alice.entity.props.email,
-      password: 'Welcome@123',
-    });
-  }
-
   let app: TestApp;
   let agent: request.SuperAgentTest;
 
@@ -30,7 +24,12 @@ describe('Query : get tracked habits grid', () => {
 
   describe('Happy path', () => {
     it('should return an HTTP status equals to 200 and a body containing an array', async () => {
-      await login(agent);
+      const loginParams: LoginParams = {
+        agent,
+        email: e2eUsers.alice.entity.props.email,
+        password: 'Welcome@123',
+      };
+      await login(loginParams);
 
       const result = await agent.get(
         '/tracked-habits-grid?year=2023&userId=' + aliceId,
@@ -51,7 +50,12 @@ describe('Query : get tracked habits grid', () => {
     });
 
     it('should fail if the user connected request another user tracked habits grid', async () => {
-      await login(agent);
+      const loginParams: LoginParams = {
+        agent,
+        email: e2eUsers.alice.entity.props.email,
+        password: 'Welcome@123',
+      };
+      await login(loginParams);
       const result = await request(app.getHttpServer()).get(
         '/tracked-habits-grid?year=2023&userId=' + bobId,
       );

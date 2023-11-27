@@ -2,15 +2,9 @@ import * as request from 'supertest';
 import { TestApp } from './utils/test-app';
 import { e2eUsers } from './seeds/user-seeds';
 import { e2eHabits } from './seeds/habit-seeds';
+import { LoginParams, login } from './utils/login';
 
 describe('Query : get user habits to track', () => {
-  async function login(agent: request.SuperAgentTest) {
-    await agent.post('/login').send({
-      email: e2eUsers.alice.entity.props.email,
-      password: 'Welcome@123',
-    });
-  }
-
   let app: TestApp;
   let agent: request.SuperAgentTest;
 
@@ -30,7 +24,12 @@ describe('Query : get user habits to track', () => {
 
   describe('Happy path', () => {
     it('should return a tracked habit with empty id', async () => {
-      await login(agent);
+      const loginParams: LoginParams = {
+        agent,
+        email: e2eUsers.alice.entity.props.email,
+        password: 'Welcome@123',
+      };
+      await login(loginParams);
 
       const result = await agent.get(
         '/tracked-habits/?date=2023-01-01&userId=' + aliceId,

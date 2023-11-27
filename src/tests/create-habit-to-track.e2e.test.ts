@@ -1,15 +1,9 @@
 import * as request from 'supertest';
 import { TestApp } from './utils/test-app';
 import { e2eUsers } from './seeds/user-seeds';
+import { LoginParams, login } from './utils/login';
 
 describe('Feature : create habit to track', () => {
-  async function login(agent: request.SuperAgentTest) {
-    await agent.post('/login').send({
-      email: e2eUsers.alice.entity.props.email,
-      password: 'Welcome@123',
-    });
-  }
-
   let app: TestApp;
   let agent: request.SuperAgentTest;
 
@@ -34,7 +28,12 @@ describe('Feature : create habit to track', () => {
 
   describe('Happy path', () => {
     it('should create the new habit', async () => {
-      await login(agent);
+      const loginParams: LoginParams = {
+        agent,
+        email: e2eUsers.alice.entity.props.email,
+        password: 'Welcome@123',
+      };
+      await login(loginParams);
 
       const result = await agent.post('/habits').send(payload);
 

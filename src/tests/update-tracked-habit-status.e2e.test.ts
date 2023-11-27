@@ -8,15 +8,9 @@ import {
   I_TRACKED_HABIT_REPOSITORY,
 } from '../domain/ports/tracked-habit-repository.port';
 import { TrackedHabit } from '../domain/entities/tracked-habit.entity';
+import { LoginParams, login } from './utils/login';
 
 describe('Feature: update tracked habit status', () => {
-  async function login(agent: request.SuperAgentTest) {
-    await agent.post('/login').send({
-      email: e2eUsers.alice.entity.props.email,
-      password: 'Welcome@123',
-    });
-  }
-
   let app: TestApp;
   let agent: request.SuperAgentTest;
 
@@ -38,7 +32,12 @@ describe('Feature: update tracked habit status', () => {
 
   describe('Happy path', () => {
     it('should complete the tracked habit', async () => {
-      await login(agent);
+      const loginParams: LoginParams = {
+        agent,
+        email: e2eUsers.alice.entity.props.email,
+        password: 'Welcome@123',
+      };
+      await login(loginParams);
 
       const result = await agent
         .post('/habits/id-1/update-status')
@@ -59,7 +58,12 @@ describe('Feature: update tracked habit status', () => {
     });
 
     it('should cancel completion of the tracked habit', async () => {
-      await login(agent);
+      const loginParams: LoginParams = {
+        agent,
+        email: e2eUsers.alice.entity.props.email,
+        password: 'Welcome@123',
+      };
+      await login(loginParams);
 
       const result = await agent
         .post('/habits/id-1/update-status')
