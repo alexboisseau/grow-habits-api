@@ -12,6 +12,7 @@ type Request = {
   response: string;
   reward: string;
   user: User;
+  timezone: string;
 };
 
 export type Response = Habit;
@@ -25,7 +26,9 @@ export class CreateHabitToTrack implements UseCase<Request, Response> {
 
   public async execute(request: Request): Promise<Response> {
     const id = this.idGenerator.generate();
-    const trackedFrom = this.dateGenerator.currentDateAtMidnight();
+    const trackedFrom = this.dateGenerator.currentDateAtMidnight(
+      request.timezone,
+    );
 
     const habit = new Habit({
       id,

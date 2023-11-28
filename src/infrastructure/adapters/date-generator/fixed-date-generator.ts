@@ -5,7 +5,7 @@ export class FixedDateGenerator implements IDateGenerator {
     return new Date('2024-01-01T00:00:00.000Z');
   }
 
-  currentDateAtMidnight(): Date {
+  currentDateAtMidnight(timezone: string): Date {
     return new Date('2024-01-01T00:00:00.000Z');
   }
 }

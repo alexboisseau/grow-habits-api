@@ -18,6 +18,7 @@ type Request = {
   habitId: string;
   date: string;
   status: TrackedHabitStatus;
+  timezone: string;
   user: User;
 };
 
@@ -67,6 +68,7 @@ export class UpdateTrackedHabitStatus implements UseCase<Request, Response> {
     habitId,
     date,
     user,
+    timezone,
     status,
   }: Request): Promise<void> {
     const habit = await this.habitRepository.findById(habitId);
@@ -79,7 +81,7 @@ export class UpdateTrackedHabitStatus implements UseCase<Request, Response> {
       userId: user.props.id,
     });
 
-    this.validateNewTrackedHabit(newTrackedHabit, habit);
+    this.validateNewTrackedHabit(newTrackedHabit, habit, timezone);
 
     await this.trackedHabitRepository.create(newTrackedHabit);
   }
@@ -87,6 +89,7 @@ export class UpdateTrackedHabitStatus implements UseCase<Request, Response> {
   private validateNewTrackedHabit(
     newTrackedHabit: TrackedHabit,
     habit: Habit | null,
+    timezone: string,
   ): void {
     if (habit === null) throw new HabitNotFoundException();
 
@@ -95,7 +98,7 @@ export class UpdateTrackedHabitStatus implements UseCase<Request, Response> {
       newTrackedHabit.props.userId,
     );
 
-    if (newTrackedHabit.isInTheFuture(this.dateGenerator.now()))
+    if (newTrackedHabit.isInTheFuture(this.dateGenerator.now(timezone)))
       throw new TrackedHabitDateInFutureException();
 
     if (newTrackedHabit.isBeforeStartDate(habit.props.trackedFrom))

@@ -60,6 +60,7 @@ describe('Feature : update tracked habit status', () => {
           date: uncompletedTrackedHabit.props.date,
           status: 'COMPLETED' as TrackedHabitStatus,
           user: userSeeds.alice,
+          timezone: 'Europe/Paris',
         };
 
         await useCase.execute({ ...payload });
@@ -82,6 +83,7 @@ describe('Feature : update tracked habit status', () => {
           date: complitedTrackedHabit.props.date,
           status: 'TO_COMPLETE' as TrackedHabitStatus,
           user: userSeeds.alice,
+          timezone: 'Europe/Paris',
         };
 
         await useCase.execute({ ...payload });
@@ -106,6 +108,7 @@ describe('Feature : update tracked habit status', () => {
           date: '2023-01-03',
           status: 'COMPLETED' as TrackedHabitStatus,
           user: userSeeds.alice,
+          timezone: 'Europe/Paris',
         };
 
         await useCase.execute({
@@ -134,6 +137,7 @@ describe('Feature : update tracked habit status', () => {
           date: '2023-01-03',
           status: 'TO_COMPLETE' as TrackedHabitStatus,
           user: userSeeds.alice,
+          timezone: 'Europe/Paris',
         };
 
         await useCase.execute({
@@ -166,6 +170,7 @@ describe('Feature : update tracked habit status', () => {
           date: '2023-01-02',
           status: 'COMPLETED' as TrackedHabitStatus,
           user: userSeeds.alice,
+          timezone: 'Europe/Paris',
         };
 
         await expect(() => useCase.execute({ ...payload })).rejects.toThrow(
@@ -181,6 +186,7 @@ describe('Feature : update tracked habit status', () => {
           date: '2024-01-02',
           status: 'COMPLETED' as TrackedHabitStatus,
           user: userSeeds.alice,
+          timezone: 'Europe/Paris',
         };
 
         await expect(() => useCase.execute({ ...payload })).rejects.toThrow(
@@ -196,6 +202,7 @@ describe('Feature : update tracked habit status', () => {
           date: '2022-12-31',
           status: 'COMPLETED' as TrackedHabitStatus,
           user: userSeeds.alice,
+          timezone: 'Europe/Paris',
         };
 
         await expect(() =>
@@ -211,6 +218,7 @@ describe('Feature : update tracked habit status', () => {
           date: uncompletedTrackedHabit.props.date,
           status: 'COMPLETED' as TrackedHabitStatus,
           user: userSeeds.bob,
+          timezone: 'Europe/Paris',
         };
 
         await expect(() =>

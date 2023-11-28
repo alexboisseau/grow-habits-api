@@ -43,6 +43,7 @@ describe('Feature : create a habit to track', () => {
       response: 'Brush my teeth during three minutes',
       reward: 'Have a good feeling with fresh breath',
       user: userSeeds.alice,
+      timezone: 'Europe/Paris',
     };
 
     it('should create a new habit and return an id', async () => {
