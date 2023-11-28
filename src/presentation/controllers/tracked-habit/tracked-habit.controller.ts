@@ -25,6 +25,7 @@ import { GetTrackedHabitsGridQueryExceptionsMapper } from './exceptions-mapper/g
 import { GetTrackedHabitsByDateAndUserIdQueryExceptionsMapper } from './exceptions-mapper/get-tracked-habits-by-date-and-user-id-query-exceptions-mapper';
 import { UpdateTrackedHabitStatus } from '../../../application/usecases/update-tracked-habit-status/update-tracked-habit-status.usecase';
 import { UpdateTrackedHabitStatusExceptionsMapper } from './exceptions-mapper/update-tracked-habit-status-exceptions-mapper';
+import { RequestHeaders } from '../../middlewares/decorators/request-headers.decorator';
 
 @Controller()
 export class TrackedHabitController {
@@ -94,11 +95,20 @@ export class TrackedHabitController {
     )
     body: TrackedHabitAPI.UpdateTrackedHabitStatus.Request,
     @Req() req: AuthenticatedRequest,
+    @RequestHeaders(
+      new ZodValidationPipe(
+        TrackedHabitAPI.UpdateTrackedHabitStatus.headersSchema,
+      ),
+    )
+    {
+      'x-timezone': timezone,
+    }: TrackedHabitAPI.UpdateTrackedHabitStatus.RequestHeaders,
   ) {
     try {
       return await this.updateTrackedHabitStatus.execute({
         ...body,
         user: req.user,
+        timezone,
       });
     } catch (error) {
       throw this.updateTrackedHabitStatusExceptionsMapper.map(error);

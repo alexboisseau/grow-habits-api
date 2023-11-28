@@ -6,6 +6,7 @@ import { HabitAPI } from './habit.contract';
 import { CreateHabitToTrackExceptionsMapper } from './exceptions-mapper/create-habit-to-track-exceptions-mapper';
 import { AuthenticatedRequest } from '../../shared/authenticated-request';
 import { HabitPresenter } from './habit.presenter';
+import { RequestHeaders } from '../../middlewares/decorators/request-headers.decorator';
 
 @Controller()
 export class HabitController {
@@ -21,15 +22,21 @@ export class HabitController {
     @Body(new ZodValidationPipe(HabitAPI.CreateHabitToTrack.schema))
     body: HabitAPI.CreateHabitToTrack.Request,
     @Req() req: AuthenticatedRequest,
+    @RequestHeaders(
+      new ZodValidationPipe(HabitAPI.CreateHabitToTrack.headersSchema),
+    )
+    { 'x-timezone': timezone }: HabitAPI.CreateHabitToTrack.RequestHeaders,
   ): Promise<HabitAPI.CreateHabitToTrack.Response> {
     try {
       const response = await this.createHabitToTrack.execute({
         ...body,
         user: req.user,
+        timezone,
       });
 
       return this.presenter.presentCreateHabitToTrackResponse(response);
     } catch (error) {
+      console.log(error);
       throw this.createHabitToTrackExceptionsMapper.map(error);
     }
   }
