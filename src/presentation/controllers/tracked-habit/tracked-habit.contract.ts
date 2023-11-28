@@ -43,6 +43,15 @@ export namespace TrackedHabitAPI {
       habitId: z.string(),
     });
 
+    export const headersSchema = z.object({
+      'x-timezone': z
+        .string()
+        .refine((timezone) =>
+          Intl.supportedValuesOf('timeZone').includes(timezone),
+        ),
+    });
+
+    export type RequestHeaders = z.infer<typeof headersSchema>;
     export type Request = z.infer<typeof schema>;
     export type Response = void;
   }
