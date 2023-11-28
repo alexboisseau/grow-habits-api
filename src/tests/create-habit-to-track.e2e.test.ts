@@ -12,6 +12,7 @@ describe('Feature : create habit to track', () => {
     await app.setup();
     await app.loadFixtures([e2eUsers.alice]);
     agent = request.agent(app.getHttpServer());
+    agent.set('x-timezone', 'Europe/Paris');
   });
 
   afterEach(async () => {

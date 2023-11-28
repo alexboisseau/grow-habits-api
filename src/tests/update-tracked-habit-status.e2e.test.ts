@@ -19,6 +19,7 @@ describe('Feature: update tracked habit status', () => {
     await app.setup();
     await app.loadFixtures([e2eUsers.alice, e2eHabits.makeMyBed]);
     agent = request.agent(app.getHttpServer());
+    agent.set('x-timezone', 'Europe/Paris');
   });
 
   afterEach(async () => {
