@@ -22,7 +22,7 @@ type Request = {
   user: User;
 };
 
-type Response = void;
+type Response = TrackedHabit;
 
 export class UpdateTrackedHabitStatus implements UseCase<Request, Response> {
   constructor(
@@ -32,7 +32,7 @@ export class UpdateTrackedHabitStatus implements UseCase<Request, Response> {
     private readonly dateGenerator: IDateGenerator,
   ) {}
 
-  async execute(request: Request): Promise<void> {
+  async execute(request: Request) {
     const existingTrackedHabit =
       await this.trackedHabitRepository.findByHabitIdAndDate(
         request.habitId,
@@ -44,12 +44,15 @@ export class UpdateTrackedHabitStatus implements UseCase<Request, Response> {
         existingTrackedHabit.props.userId,
         request.user.props.id,
       );
+
       await this.updateExistingTrackedHabitStatus(
         existingTrackedHabit,
         request.status,
       );
+
+      return existingTrackedHabit;
     } else {
-      await this.createNewTrackedHabit(request);
+      return await this.createNewTrackedHabit(request);
     }
   }
 
@@ -70,7 +73,7 @@ export class UpdateTrackedHabitStatus implements UseCase<Request, Response> {
     user,
     timezone,
     status,
-  }: Request): Promise<void> {
+  }: Request): Promise<TrackedHabit> {
     const habit = await this.habitRepository.findById(habitId);
 
     const newTrackedHabit = new TrackedHabit({
@@ -84,6 +87,7 @@ export class UpdateTrackedHabitStatus implements UseCase<Request, Response> {
     this.validateNewTrackedHabit(newTrackedHabit, habit, timezone);
 
     await this.trackedHabitRepository.create(newTrackedHabit);
+    return newTrackedHabit;
   }
 
   private validateNewTrackedHabit(

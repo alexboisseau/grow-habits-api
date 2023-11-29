@@ -63,12 +63,7 @@ describe('Feature : update tracked habit status', () => {
           timezone: 'Europe/Paris',
         };
 
-        await useCase.execute({ ...payload });
-
-        const trackedHabit = (await trackedHabitRepository.findByHabitIdAndDate(
-          payload.habitId,
-          payload.date,
-        )) as TrackedHabit;
+        const trackedHabit = await useCase.execute({ ...payload });
 
         expect(trackedHabit.props).toEqual({
           ...complitedTrackedHabit.props,
@@ -86,12 +81,7 @@ describe('Feature : update tracked habit status', () => {
           timezone: 'Europe/Paris',
         };
 
-        await useCase.execute({ ...payload });
-
-        const trackedHabit = (await trackedHabitRepository.findByHabitIdAndDate(
-          payload.habitId,
-          payload.date,
-        )) as TrackedHabit;
+        const trackedHabit = await useCase.execute({ ...payload });
 
         expect(trackedHabit.props).toEqual({
           ...complitedTrackedHabit.props,
@@ -111,15 +101,9 @@ describe('Feature : update tracked habit status', () => {
           timezone: 'Europe/Paris',
         };
 
-        await useCase.execute({
+        const createdTrackHabit = await useCase.execute({
           ...payload,
         });
-
-        const createdTrackHabit =
-          (await trackedHabitRepository.findByHabitIdAndDate(
-            payload.habitId,
-            payload.date,
-          )) as TrackedHabit;
 
         expect(createdTrackHabit).not.toBeNull();
         expect(createdTrackHabit.props).toEqual({
@@ -140,15 +124,9 @@ describe('Feature : update tracked habit status', () => {
           timezone: 'Europe/Paris',
         };
 
-        await useCase.execute({
+        const createdTrackHabit = await useCase.execute({
           ...payload,
         });
-
-        const createdTrackHabit =
-          (await trackedHabitRepository.findByHabitIdAndDate(
-            payload.habitId,
-            payload.date,
-          )) as TrackedHabit;
 
         expect(createdTrackHabit).not.toBeNull();
         expect(createdTrackHabit.props).toEqual({
