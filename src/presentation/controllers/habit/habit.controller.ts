@@ -36,7 +36,6 @@ export class HabitController {
 
       return this.presenter.presentCreateHabitToTrackResponse(response);
     } catch (error) {
-      console.log(error);
       throw this.createHabitToTrackExceptionsMapper.map(error);
     }
   }
