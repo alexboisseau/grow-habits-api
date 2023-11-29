@@ -53,6 +53,12 @@ export namespace TrackedHabitAPI {
 
     export type RequestHeaders = z.infer<typeof headersSchema>;
     export type Request = z.infer<typeof schema>;
-    export type Response = void;
+    export type Response = {
+      id: string;
+      date: string;
+      status: TrackedHabitStatus;
+      habitId: string;
+      userId: string;
+    };
   }
 }

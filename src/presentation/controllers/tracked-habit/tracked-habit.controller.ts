@@ -17,7 +17,10 @@ import {
   I_GET_TRACKED_HABITS_BY_DATE_AND_USER_ID_QUERY,
 } from '../../../domain/ports/get-tracked-habits-by-date-and-user-id.port';
 import { TrackedHabitAPI } from './tracked-habit.contract';
-import { GetTrackedHabitsByDateAndUserIdPresenter } from './tracked-habit.presenter';
+import {
+  GetTrackedHabitsByDateAndUserIdPresenter,
+  UpdateTrackedHabitStatusPresenter,
+} from './tracked-habit.presenter';
 import { ZodValidationPipe } from '../../middlewares/pipes/zod-validation.pipe';
 import { SessionGuard } from '../../middlewares/guards/session.guard';
 import { AuthenticatedRequest } from '../../shared/authenticated-request';
@@ -39,6 +42,7 @@ export class TrackedHabitController {
     private readonly getTrackedHabitsGridQueryExceptionsMapper: GetTrackedHabitsGridQueryExceptionsMapper,
     private readonly updateTrackedHabitStatus: UpdateTrackedHabitStatus,
     private readonly updateTrackedHabitStatusExceptionsMapper: UpdateTrackedHabitStatusExceptionsMapper,
+    private readonly updateTrackedHabitStatusPresenter: UpdateTrackedHabitStatusPresenter,
   ) {}
 
   @UseGuards(SessionGuard)
@@ -103,13 +107,15 @@ export class TrackedHabitController {
     {
       'x-timezone': timezone,
     }: TrackedHabitAPI.UpdateTrackedHabitStatus.RequestHeaders,
-  ) {
+  ): Promise<TrackedHabitAPI.UpdateTrackedHabitStatus.Response> {
     try {
-      return await this.updateTrackedHabitStatus.execute({
+      const result = await this.updateTrackedHabitStatus.execute({
         ...body,
         user: req.user,
         timezone,
       });
+
+      return this.updateTrackedHabitStatusPresenter.present(result);
     } catch (error) {
       throw this.updateTrackedHabitStatusExceptionsMapper.map(error);
     }

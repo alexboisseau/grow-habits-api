@@ -3,11 +3,6 @@ import { TestApp } from './utils/test-app';
 import { e2eHabits } from './seeds/habit-seeds';
 import { e2eUsers } from './seeds/user-seeds';
 import { TrackedHabitStatus } from '@prisma/client';
-import {
-  ITrackedHabitRepository,
-  I_TRACKED_HABIT_REPOSITORY,
-} from '../domain/ports/tracked-habit-repository.port';
-import { TrackedHabit } from '../domain/entities/tracked-habit.entity';
 import { LoginParams, login } from './utils/login';
 
 describe('Feature: update tracked habit status', () => {
@@ -46,17 +41,7 @@ describe('Feature: update tracked habit status', () => {
         .send(payload);
 
       expect(result.status).toEqual(200);
-
-      const trackedHabitRepository = app.get<ITrackedHabitRepository>(
-        I_TRACKED_HABIT_REPOSITORY,
-      );
-
-      const completedHabit = (await trackedHabitRepository.findByHabitIdAndDate(
-        'id-1',
-        payload.date,
-      )) as TrackedHabit;
-
-      expect(completedHabit.props.status).toEqual('COMPLETED');
+      expect(result.body.status).toEqual('COMPLETED');
     });
 
     it('should cancel completion of the tracked habit', async () => {
@@ -72,17 +57,7 @@ describe('Feature: update tracked habit status', () => {
         .send({ ...payload, status: TrackedHabitStatus.TO_COMPLETE });
 
       expect(result.status).toEqual(200);
-
-      const trackedHabitRepository = app.get<ITrackedHabitRepository>(
-        I_TRACKED_HABIT_REPOSITORY,
-      );
-
-      const completedHabit = (await trackedHabitRepository.findByHabitIdAndDate(
-        'id-1',
-        payload.date,
-      )) as TrackedHabit;
-
-      expect(completedHabit.props.status).toEqual('TO_COMPLETE');
+      expect(result.body.status).toEqual('TO_COMPLETE');
     });
   });
 

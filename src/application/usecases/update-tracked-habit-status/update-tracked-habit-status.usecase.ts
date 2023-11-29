@@ -22,7 +22,7 @@ type Request = {
   user: User;
 };
 
-type Response = TrackedHabit;
+export type Response = TrackedHabit;
 
 export class UpdateTrackedHabitStatus implements UseCase<Request, Response> {
   constructor(
