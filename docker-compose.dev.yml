@@ -1,0 +1,54 @@
+version: '3.9'
+
+services:
+  app:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      # Only will build development stage from our dockerfile
+      target: development
+    volumes:
+      - .:/usr/src/app
+      - '/usr/src/app/node_modules'
+    env_file:
+      - .env.dev
+    # Run a command against the development stage of the image
+    command: npm run start:migrate:dev
+    ports:
+      - 3000:3000
+    depends_on:
+      - redis
+      - postgres
+
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    volumes:
+      - redis:/data
+
+  postgres:
+    image: postgres:latest
+    ports:
+      - '5432:5432'
+    env_file:
+      - .env.dev
+    volumes:
+      - docker-nest-postgres:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+      - '80:80'
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user-name@domain-name.com
+      PGADMIN_DEFAULT_PASSWORD: strong-password
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+
+volumes:
+  redis:
+    driver: local
+  docker-nest-postgres:
+  pgadmin-data:
