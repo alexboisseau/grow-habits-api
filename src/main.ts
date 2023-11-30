@@ -6,15 +6,22 @@ import { createClient } from 'redis';
 import RedisStore from 'connect-redis';
 import { AppModule } from './infrastructure/modules/app.module';
 import { ConfigService } from '@nestjs/config';
-import { AppConfig, SessionConfig } from './infrastructure/config/schemas';
+import {
+  AppConfig,
+  RedisConfig,
+  SessionConfig,
+} from './infrastructure/config/schemas';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = app.get(ConfigService);
   const appConfig = config.get('app') as AppConfig;
   const sessionConfig = config.get('session') as SessionConfig;
+  const redisConfig = config.get('redis') as RedisConfig;
 
-  const redisClient = createClient();
+  const redisClient = createClient({
+    url: `redis://${redisConfig.host}:${redisConfig.port}`,
+  });
   redisClient
     .connect()
     .catch((err) => console.error('Redis Client Error :', err));
