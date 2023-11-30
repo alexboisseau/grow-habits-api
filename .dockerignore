@@ -1,0 +1,11 @@
+.git
+coverage
+node_modules
+dist
+.dockerignore
+Dockerfile
+docker-compose.dev.yml
+README.md
+jest.config.e2e.ts
+jest.config.ts
+stryker.config.json
