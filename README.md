@@ -29,7 +29,7 @@ cd ./grow-habits
 
 #### Run dev start command
 ```sh
-build_and_start_dev
+make build_and_start_dev
 ```
 
 And voila !
